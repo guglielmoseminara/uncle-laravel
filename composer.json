@@ -1,5 +1,5 @@
 {
-    "name": "uncleproject/laravel-uncle",
+    "name": "uncleproject/uncle-laravel",
     "description": "An uncle implementation for laravel",
     "type": "library",
     "authors": [
