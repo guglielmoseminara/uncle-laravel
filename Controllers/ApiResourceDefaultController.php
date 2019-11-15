@@ -139,9 +139,8 @@ class ApiResourceDefaultController extends ApiResourceController{
         if (!$model) {
             return $this->validNotFoundJsonResponse();
         }
-        if ($this->repository->getRelationship('user') == 'BelongsTo' && (!isset($request->user_id) || (isset($request->user_id) && $request->user_id == $request->user()->id))) {
-            $request->merge(['user_id' => $request->user()->id]);
-        }
+        $this->setRequestUser($request);
+
         DB::beginTransaction();
 
         if(method_exists($this,'beforeUpdate'))
@@ -229,9 +228,7 @@ class ApiResourceDefaultController extends ApiResourceController{
 
     protected function storeDB(Request $request, $ignoreRelations = false){
 
-        if ($this->repository->getRelationship('user') == 'BelongsTo' && (!isset($request->user_id) || (isset($request->user_id) && $request->user_id == $request->user()->id))) {
-            $request->merge(['user_id' => $request->user()->id]);
-        }
+        $this->setRequestUser($request);
 
         try {
             $instance = $this->repository->create($request->all());
@@ -424,6 +421,18 @@ class ApiResourceDefaultController extends ApiResourceController{
         }*/
 
         return !(!method_exists($model, $relationName) || !$model->{$relationName}());
+    }
+
+    private function setRequestUser(&$request) {
+        $user = $request->user();
+        if ($user) {
+            $isAdmin = in_array('admin', $user->getRoleNames()->toArray());
+            if ($this->repository->getRelationship('user') == 'BelongsTo') {
+                if (!isset($request->user_id) || !$isAdmin || ($isAdmin && isset($request->user_id) && $request->user_id == $request->user()->id)) {
+                    $request->merge(['user_id' => $request->user()->id]);
+                }
+            }
+        }
     }
 
 }
