@@ -139,7 +139,7 @@ class ApiResourceDefaultController extends ApiResourceController{
         if (!$model) {
             return $this->validNotFoundJsonResponse();
         }
-        if ($this->repository->getRelationship('user') == 'BelongsTo') {
+        if ($this->repository->getRelationship('user') == 'BelongsTo' && (!isset($request->user_id) || (isset($request->user_id) && $request->user_id == $request->user()->id))) {
             $request->merge(['user_id' => $request->user()->id]);
         }
         DB::beginTransaction();
@@ -229,7 +229,7 @@ class ApiResourceDefaultController extends ApiResourceController{
 
     protected function storeDB(Request $request, $ignoreRelations = false){
 
-        if ($this->repository->getRelationship('user') == 'BelongsTo') {
+        if ($this->repository->getRelationship('user') == 'BelongsTo' && (!isset($request->user_id) || (isset($request->user_id) && $request->user_id == $request->user()->id))) {
             $request->merge(['user_id' => $request->user()->id]);
         }
 
