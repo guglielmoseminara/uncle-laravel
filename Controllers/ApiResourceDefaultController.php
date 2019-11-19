@@ -46,6 +46,15 @@ class ApiResourceDefaultController extends ApiResourceController{
         } else {
             $items = $this->getPaginatorInstance($perPage, $orderBy, $sortedBy);
         }
+
+        if(method_exists($this,'addMeta'))
+        {
+            $meta = $this->addMeta('index');
+            if($meta){
+                $items['meta'] = array_merge($items['meta'], $meta);
+            }
+        }
+
         return $this->validSuccessJsonResponse('Success', $items);
     }
 
@@ -64,6 +73,14 @@ class ApiResourceDefaultController extends ApiResourceController{
         $model = $this->findFirstByKey($key);
         if (!$model) {
             return $this->validNotFoundJsonResponse();
+        }
+
+        if(method_exists($this,'addMeta')) {
+            $meta = $this->addMeta('show');
+            if($meta){
+                $model['meta'] = [];
+                $model['meta'] = array_merge($model['meta'], $meta);
+            }
         }
 
         return $this->validSuccessJsonResponse('Success', $model);
@@ -128,6 +145,13 @@ class ApiResourceDefaultController extends ApiResourceController{
             $data = $store['model'];
         }
 
+        if(method_exists($this,'addMeta')) {
+            $meta = $this->addMeta('store');
+            if($meta){
+                $data['meta'] = [];
+                $data['meta'] =array_merge($data['meta'], $meta);
+            }
+        }
 
         return $this->validSuccessJsonResponse($message, $data);
     }
@@ -177,6 +201,15 @@ class ApiResourceDefaultController extends ApiResourceController{
         } else {
             $data = $model;
         }
+
+        if(method_exists($this,'addMeta')) {
+            $meta = $this->addMeta('update');
+            if($meta){
+                $data['meta'] = [];
+                $data['meta'] = array_merge($data['meta'], $meta);
+            }
+        }
+
         return $this->validSuccessJsonResponse($message, $data);
     }
 
@@ -222,6 +255,14 @@ class ApiResourceDefaultController extends ApiResourceController{
 
         $message = $this->destroySuccessfulMessage($key);
         $data = $model;
+
+        if(method_exists($this,'addMeta')) {
+            $meta = $this->addMeta('destroy');
+            if($meta){
+                $data['meta'] = [];
+                $data['meta'] = array_merge($data['meta'], $meta);
+            }
+        }
 
         return $this->validSuccessJsonResponse($message, $data);
     }
