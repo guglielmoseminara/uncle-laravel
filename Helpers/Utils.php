@@ -3,8 +3,12 @@
 namespace UncleProject\UncleLaravel\Helpers;
 use PhpParser\ErrorHandler\Collecting;
 use League\Fractal\Manager;
+use League\Fractal\Serializer\DataArraySerializer;
+use League\Fractal\Resource\Collection;
+use League\Fractal\Pagination\IlluminatePaginatorAdapter;
 use League\Fractal\Resource\Item;
 use stdClass;
+
 
 class Utils {
 
@@ -61,6 +65,21 @@ class Utils {
         $hours = floor($time / 60);
         $minutes = ($time % 60);
         return sprintf($format, $hours, $minutes);
+    }
+
+    public function paginateForApi($collection, $presenter, $perPage = 15){
+
+        $paginator = $collection->paginate($perPage);
+        $collection = $paginator->getCollection();
+
+        $resource = new Collection($collection, $presenter->getTransformer());
+        $resource->setPaginator(new IlluminatePaginatorAdapter($paginator));
+
+        $manager = new Manager();
+        $manager->setSerializer(new DataArraySerializer());
+
+        return $manager->createData($resource)->toArray();
+
     }
 
 
