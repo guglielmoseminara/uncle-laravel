@@ -51,6 +51,7 @@ class ApiResourceDefaultController extends ApiResourceController{
         {
             $meta = $this->addMeta('index');
             if($meta){
+                if(!isset($items['meta'])) $items['meta'] = [];
                 $items['meta'] = array_merge($items['meta'], $meta);
             }
         }
@@ -78,7 +79,7 @@ class ApiResourceDefaultController extends ApiResourceController{
         if(method_exists($this,'addMeta')) {
             $meta = $this->addMeta('show');
             if($meta){
-                $model['meta'] = [];
+                if(!isset($model['meta'])) $model['meta'] = [];
                 $model['meta'] = array_merge($model['meta'], $meta);
             }
         }
@@ -148,7 +149,7 @@ class ApiResourceDefaultController extends ApiResourceController{
         if(method_exists($this,'addMeta')) {
             $meta = $this->addMeta('store');
             if($meta){
-                $data['meta'] = [];
+                if(!isset($data['meta'])) $data['meta'] = [];
                 $data['meta'] =array_merge($data['meta'], $meta);
             }
         }
@@ -205,7 +206,7 @@ class ApiResourceDefaultController extends ApiResourceController{
         if(method_exists($this,'addMeta')) {
             $meta = $this->addMeta('update');
             if($meta){
-                $data['meta'] = [];
+                if(!isset($data['meta'])) $data['meta'] = [];
                 $data['meta'] = array_merge($data['meta'], $meta);
             }
         }
@@ -259,7 +260,7 @@ class ApiResourceDefaultController extends ApiResourceController{
         if(method_exists($this,'addMeta')) {
             $meta = $this->addMeta('destroy');
             if($meta){
-                $data['meta'] = [];
+                if(!isset($data['meta'])) $data['meta'] = [];
                 $data['meta'] = array_merge($data['meta'], $meta);
             }
         }
