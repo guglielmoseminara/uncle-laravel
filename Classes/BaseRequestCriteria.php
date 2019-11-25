@@ -134,8 +134,7 @@ class BaseRequestCriteria implements CriteriaInterface
                                     $this->buildCondition($query, $relatedTable.'.'.$field, $condition, $value);
                                 });
                             } else {
-                                // $this->buildCondition($query, $modelTableName.'.'.$field, $condition, $value);
-                                $this->buildCondition($query, $field, $condition, $value);
+                                $this->buildCondition($query, $modelTableName.'.'.$field, $condition, $value);
                             }
                             $isFirstField = false;
                         }
@@ -147,14 +146,14 @@ class BaseRequestCriteria implements CriteriaInterface
                                     $this->buildCondition($query, $relatedTable.'.'.$field, $condition, $value);
                                 });
                             } else {
-                                // $this->buildCondition($query, $modelTableName.'.'.$field, $condition, $value);
-                                $this->buildCondition($query, $field, $condition, $value);
+                                $this->buildCondition($query, $modelTableName.'.'.$field, $condition, $value);
                             }
                         }
                     }
                 }
             });
         }
+
         if (isset($orderBy) && !empty($orderBy)) {
             $split = explode('.', $orderBy);
             if(count($split) > 1) {
@@ -188,7 +187,7 @@ class BaseRequestCriteria implements CriteriaInterface
         $modelTableName = $model->getTable();
         if (method_exists($model, 'translationModel')) {
             $translationModel = $model->translationModel();
-            if (in_array($field, $translationModel->getFillable())) {
+            if (isset($model->translatable) && is_array($model->translatable) && in_array($field, $model->translatable)) {
                 $modelTableName = $translationModel->getTable();
             }
         }
