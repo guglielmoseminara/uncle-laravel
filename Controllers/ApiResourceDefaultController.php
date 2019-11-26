@@ -26,7 +26,8 @@ class ApiResourceDefaultController extends ApiResourceController{
         $this->getFormRequestInstance();
         $perPage = $request->get('perPage');
         $presenter = $request->get('presenter');
-        $orderBy = $request->get('orderBy') ? $request->get('orderBy') : 'id';
+        $modelTable = $this->repository->getModelInstance()->getTable();
+        $orderBy = $request->get('orderBy') ? $request->get('orderBy') : $modelTable.'.id';
         $sortedBy = $request->get('sortedBy') ? $request->get('sortedBy') : 'asc';
         if (isset($this->indexPresenter)) {
             $this->repository->setPresenter($this->indexPresenter);
