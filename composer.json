@@ -20,7 +20,8 @@
       "spatie/laravel-sluggable": "^2.1",
       "tymon/jwt-auth": "^1.0",
       "paypal/rest-api-sdk-php": "^1.14",
-      "riclep/lorem-flickr-faker": "^0.0.3"
+      "riclep/lorem-flickr-faker": "^0.0.3",
+      "cesargb/laravel-cascade-delete": "^0.6.0"
     },
     "require-dev": {
     },
