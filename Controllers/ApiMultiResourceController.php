@@ -31,6 +31,13 @@ class ApiMultiResourceController {
         foreach($this->resources as $km => $vm) {
             if (count($types) == 0 || in_array(strtolower($km), $types)){
                 $modelClass = App::make($km.'Resource')->getModelClassPath($vm['model']);
+                if (isset($vm['where'])) {
+                    $whereQuery = [];
+                    foreach ($vm['where'] as $where) {
+                        $whereQuery[$where[0]] = ($where[1] == '!=' ? '!' : '').$where[2];
+                    }
+                    $searchQuery = array_merge($searchQuery, $whereQuery);
+                }
                 $vm['fields'][] = $searchQuery;
                 $searchResults = $searchResults->registerModel($modelClass, $vm['fields']);    
             }

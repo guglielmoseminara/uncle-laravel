@@ -62,8 +62,26 @@ class BaseSearchAspect extends ModelSearchAspect {
         });
         if (count($this->conditions) > 0) {
             foreach ($this->conditions as $key => $value) {
-                if (Schema::hasColumn(App::make($this->model)->getTable(), $key)) {
-                    $query->where($key, '=', $value);
+                $relation = null;
+                if(stripos($key, '.')) {
+                    $explode = explode('.', $key);
+                    $key = array_pop($explode);
+                    $relation = implode('.', $explode);
+                }
+                if (strstr($value, '!') !== false) {
+                    $condition = '!=';
+                    $value = str_replace('!', '', $value);    
+                } else {
+                    $condition = '=';
+                }
+                if(!is_null($relation) && method_exists($query->getModel(), $relation)) {
+                    $query->whereHas($relation, function($query) use($key, $condition, $value) {
+                        $query->where($key, $condition, $value);
+                    });
+                } else {
+                    if (isset($query->getModel()->$key)) {
+                        $query->where($key, $condition, $value);
+                    }
                 }
             }
         }
