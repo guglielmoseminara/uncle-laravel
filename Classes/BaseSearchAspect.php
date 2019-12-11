@@ -79,7 +79,7 @@ class BaseSearchAspect extends ModelSearchAspect {
                         $query->where($key, $condition, $value);
                     });
                 } else {
-                    if (isset($query->getModel()->$key)) {
+                    if (Schema::hasColumn(App::make($this->model)->getTable(), $key)) {
                         $query->where($key, $condition, $value);
                     }
                 }
