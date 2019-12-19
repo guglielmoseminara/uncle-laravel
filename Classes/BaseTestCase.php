@@ -171,7 +171,7 @@ abstract class BaseTestCase extends TestCase
         $result = $this->getResponseData($response);
         foreach($sendRequest as $key => $value)
         {
-            $this->assertTrue($result->$key == $value);
+            if(!is_array($value)) $this->assertTrue($result->$key == $value);
         }
 
     }
