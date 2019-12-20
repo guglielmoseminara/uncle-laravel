@@ -71,7 +71,8 @@ abstract class BaseTestCase extends TestCase
         if($code)
         {
             if($code == 200) {
-                $response->assertJson(['code' => '200'])
+                $response->assertStatus(200)
+                    ->assertJson(['code' => '200'])
                     ->assertJsonStructure($assertJsonStructure)
                     ->isOk();
             } else {
