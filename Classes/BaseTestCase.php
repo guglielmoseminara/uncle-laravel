@@ -167,6 +167,20 @@ abstract class BaseTestCase extends TestCase
         ])->isOk();
     }
 
+    public function assertArraySubResource ($readSubResource, $sendSubResource)
+    {
+        $this->assertTrue(count($readSubResource) == count($sendSubResource));
+        foreach ($sendSubResource as $ki => $vi) {
+            foreach ($vi as $kfi => $vfi) {
+                if($kfi == 'image') {
+                    $this->assertTrue(file_exists($readSubResource[$ki]->getFilePath($kfi)));
+                    unlink($readSubResource[$ki]->getFilePath($kfi));
+                }
+                else $this->assertTrue($readSubResource[$ki]->$kfi == $vfi);
+            }
+        }
+    }
+
     public function assertIsUpdated ($response, $sendRequest){
         $result = $this->getResponseData($response);
         foreach($sendRequest as $key => $value)
@@ -174,7 +188,6 @@ abstract class BaseTestCase extends TestCase
             if(!is_array($value) && isset($result->$key))
                 $this->assertTrue($result->$key == $value);
         }
-
     }
 
     public function assertStoreElementExist ($indexResponse, $storeResponse){
