@@ -40,12 +40,14 @@ class Utils {
     }
 
     public function transform($items, $presenter) {
+        if(!$items) return $items;
         $presenterObj = new $presenter();
         $results = array_map(array($this, 'toObject'), collect($items)->transformWith($presenterObj->getTransformer())->toArray()['data']);
         return $results;
     }
 
     public function transformItem($item, $presenter) {
+        if(!$item) return $item;
         $presenterObj = new $presenter();
         return $presenterObj->getTransformer()->transform($item);
     }

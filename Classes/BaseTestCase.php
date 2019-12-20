@@ -70,8 +70,7 @@ abstract class BaseTestCase extends TestCase
 
         if($code)
         {
-            if($code == 200)
-            {
+            if($code == 200) {
                 $response->assertJson(['code' => '200'])
                     ->assertJsonStructure($assertJsonStructure)
                     ->isOk();
@@ -171,7 +170,8 @@ abstract class BaseTestCase extends TestCase
         $result = $this->getResponseData($response);
         foreach($sendRequest as $key => $value)
         {
-            if(!is_array($value)) $this->assertTrue($result->$key == $value);
+            if(!is_array($value) && isset($result->$key))
+                $this->assertTrue($result->$key == $value);
         }
 
     }
@@ -191,8 +191,7 @@ abstract class BaseTestCase extends TestCase
 
     public function assertResponseListKeyEqualValue ($response, $key, $value){
         $results = $this->getResponseData($response);
-        foreach($results as $result)
-        {
+        foreach($results as $result) {
             $this->assertTrue($result->$key == $value);
         }
     }
