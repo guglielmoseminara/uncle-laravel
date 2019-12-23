@@ -167,20 +167,6 @@ abstract class BaseTestCase extends TestCase
         ])->isOk();
     }
 
-    public function assertArraySubResource ($readSubResource, $sendSubResource)
-    {
-        $this->assertTrue(count($readSubResource) == count($sendSubResource));
-        foreach ($sendSubResource as $ki => $vi) {
-            foreach ($vi as $kfi => $vfi) {
-                if($kfi == 'image') {
-                    $this->assertTrue(file_exists($readSubResource[$ki]->getFilePath($kfi)));
-                    unlink($readSubResource[$ki]->getFilePath($kfi));
-                }
-                else $this->assertTrue($readSubResource[$ki]->$kfi == $vfi);
-            }
-        }
-    }
-
     public function assertIsUpdated ($response, $sendRequest){
         $result = $this->getResponseData($response);
         foreach($sendRequest as $key => $value)
@@ -213,5 +199,25 @@ abstract class BaseTestCase extends TestCase
     public function assertResponseKeyEqualValue ($response, $key, $value){
         $productResult = $this->getResponseData($response);
         $this->assertTrue($productResult->$key == $value);
+    }
+
+    public function assertSubResource ($readSubResource, $sendSubResource){
+        foreach ($sendSubResource as $key => $value) {
+            if(!is_array($value) && isset($result->$key))
+                $this->assertTrue($readSubResource->$key == $value);
+        }
+    }
+
+    public function assertArraySubResource ($readSubResource, $sendSubResource){
+        $this->assertTrue(count($readSubResource) == count($sendSubResource));
+        foreach ($sendSubResource as $ki => $vi) {
+            foreach ($vi as $kfi => $vfi) {
+                if($kfi == 'image') {
+                    $this->assertTrue(file_exists($readSubResource[$ki]->getFilePath($kfi)));
+                    unlink($readSubResource[$ki]->getFilePath($kfi));
+                }
+                else $this->assertTrue($readSubResource[$ki]->$kfi == $vfi);
+            }
+        }
     }
 }
