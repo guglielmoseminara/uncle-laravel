@@ -221,7 +221,11 @@ class ApiResourceDefaultController extends ApiResourceController{
         }
         $fileBag = $request->files;
         $requestData = $request->all();
-        $relativePath .= $model->getTable().'/'.$model->id.'/';
+        $modelId = $model->id;
+        if (method_exists($model, 'getUploadableId')) {
+            $modelId = $model->getUploadableId();
+        }
+        $relativePath .= $model->getTable().'/'.$modelId.'/';
         foreach ($fileBag->all() as $paramName => $uploadedFiles) {
             $attributes = $model->getAttributes();
             if (array_key_exists($paramName, $attributes)) {
