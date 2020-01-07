@@ -194,11 +194,13 @@ class ApiResourceDefaultController extends ApiResourceController{
             throw new ResourceControllerException($message);
         }
 
+
         DB::commit();
         $message = $this->updateSuccessfulMessage($key);
+
         if (isset($this->updatePresenter)) {
             $this->repository->setPresenter($this->updatePresenter);
-            $primaryKey = $model->primaryKey;
+            $primaryKey = $model->getKeyName();
             $data = $this->repository->find($model->$primaryKey);
         } else {
             $data = $model;
