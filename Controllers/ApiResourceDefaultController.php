@@ -195,11 +195,11 @@ class ApiResourceDefaultController extends ApiResourceController{
         }
 
         DB::commit();
-
         $message = $this->updateSuccessfulMessage($key);
         if (isset($this->updatePresenter)) {
             $this->repository->setPresenter($this->updatePresenter);
-            $data = $this->repository->find($model->id);
+            $primaryKey = $model->primaryKey;
+            $data = $this->repository->find($model->$primaryKey);
         } else {
             $data = $model;
         }
@@ -211,7 +211,7 @@ class ApiResourceDefaultController extends ApiResourceController{
                 $data['meta'] = array_merge($data['meta'], $meta);
             }
         }
-
+        
         return $this->validSuccessJsonResponse($message, $data);
     }
 
