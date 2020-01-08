@@ -16,7 +16,10 @@ trait HasUpload {
         }
         if (in_array($key, $this->uploadable)) {
             $value = $this->attributes[$key];
-            if (strstr($value, 'http://') === FALSE && strstr($value, 'https://') === FALSE) {
+            if (empty($value)) {
+                $value = null;
+            }
+            else if (strstr($value, 'http://') === FALSE && strstr($value, 'https://') === FALSE) {
                 $url = config('app.url').'/'.config('app.uploadable.url');
                 $value = self::retrieveUrl($this, $url, $value);
             }
