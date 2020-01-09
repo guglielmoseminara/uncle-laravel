@@ -126,6 +126,28 @@ abstract class BaseTestCase extends TestCase
         }
     }
 
+    public function checkListHasOneConditions($rows, $conditions, $conditionType = null) {
+        $exist = false;
+        foreach($rows as $row) {
+            foreach($conditions as $conditionKey => $conditionValue) {
+                $value = array_get($row, $conditionKey);
+                dd($value);
+                if (is_array($conditionValue) && count($conditionValue) == 2) {
+                    $exist = $exist || ($value !== null && $value >= $conditionValue[0] && $value <= $conditionValue[1]);
+                } else if (is_array($value)) {
+                    $exist = $exist || ($value !== null && in_array($conditionValue, $value));
+                } else if ($conditionType == 'like') {
+                    $exist = $exist || (strstr($value, $conditionValue) !== FALSE);
+                }
+                else {
+                    $exist = $exist || ($value !== null && $value == $conditionValue);
+                }
+            }
+        }
+
+        $this->assertTrue($exist);
+    }
+
     public function getResponseData($response) {
         return json_decode($response->getContent())->results->data;
     }
