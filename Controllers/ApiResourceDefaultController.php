@@ -42,6 +42,7 @@ class ApiResourceDefaultController extends ApiResourceController{
 
             }
         }
+
         if ($perPage == '-1') {
             $items = $this->getItemsCollection($orderBy, $sortedBy);
         } else {
@@ -96,6 +97,14 @@ class ApiResourceDefaultController extends ApiResourceController{
         }
         return $this->repository
             ->find($key);
+    }
+
+    public function getItemsCollection($orderBy = 'updated_at', $order = 'desc')
+    {
+        if ($this->useSoftDeletes) {
+            return $this->repository->withTrashed()->get();
+        }
+        return $this->repository->get();
     }
 
     public function getPaginatorInstance($perPage = 15, $orderBy = 'updated_at', $order = 'desc') {

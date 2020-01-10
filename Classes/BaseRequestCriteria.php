@@ -155,17 +155,22 @@ class BaseRequestCriteria implements CriteriaInterface
         }
 
         if (isset($orderBy) && !empty($orderBy)) {
-            $split = explode('.', $orderBy);
-            if(count($split) > 1) {
-                $modelInstance = $model->getModel();
-                $table = $modelInstance->getTable();
-                if (method_exists($modelInstance, 'getJoinField')) {
-                    $field = $model->getModel()->getJoinField($orderBy, $sortedBy);
-                    list($relatedTable, $relatedId) = explode('.', $field);
-                    $model = $model->leftJoin($relatedTable, "$table.id", '=', "$relatedTable.id")->orderBy($field, $sortedBy);    
+            $orders = explode('|', $orderBy);
+            $sorters = explode('|', $sortedBy);
+            foreach($orders as $index => $order)
+            {
+                $split = explode('.', $order);
+                if(count($split) > 1) {
+                    $modelInstance = $model->getModel();
+                    $table = $modelInstance->getTable();
+                    if (method_exists($modelInstance, 'getJoinField')) {
+                        $field = $model->getModel()->getJoinField($order, $sorters[$index]);
+                        list($relatedTable, $relatedId) = explode('.', $field);
+                        $model = $model->leftJoin($relatedTable, "$table.id", '=', "$relatedTable.id")->orderBy($field, $sorters[$index]);
+                    }
+                } else {
+                    $model = $model->orderBy($order, $sorters[$index]);
                 }
-            } else {
-                $model = $model->orderBy($orderBy, $sortedBy);
             }
         }
 
