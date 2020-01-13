@@ -393,6 +393,9 @@ class ApiResourceDefaultController extends ApiResourceController{
                     array_push($records, $record);
                 }
             }
+
+            $this->updateOrCreateRelations($fields, $record);
+
         }
         if ($keys && (property_exists($this, 'pruneHasMany') && $this->pruneHasMany !== false)) {
             $reflection = new \ReflectionClass($model);
@@ -444,6 +447,8 @@ class ApiResourceDefaultController extends ApiResourceController{
                 array_push($keys, $record->id);
                 array_push($records, $record);
             }
+
+            $this->updateOrCreateRelations($fields, $record);
         }
         $reflection = new \ReflectionClass($model);
         $notIn = $relation->newPivot()->whereHas(strtolower($reflection->getShortName()), function($query) use($model) {
