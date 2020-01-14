@@ -212,11 +212,20 @@ abstract class BaseTestCase extends TestCase
         $this->assertTrue(count($readSubResource) == count($sendSubResource));
         foreach ($sendSubResource as $ki => $vi) {
             foreach ($vi as $kfi => $vfi) {
-                if($kfi == 'image') {
-                    $this->assertTrue(file_exists($readSubResource[$ki]->getFilePath($kfi)));
-                    unlink($readSubResource[$ki]->getFilePath($kfi));
+                if(is_array($vfi)) {
+                    //$this->assertArraySubResource($readSubResource[$ki]->$kfi()->get(),$vfi);
                 }
-                else $this->assertTrue($readSubResource[$ki]->$kfi == $vfi);
+                else{
+                    if($kfi == 'image') {
+                        $this->assertTrue(file_exists($readSubResource[$ki]->getFilePath($kfi)));
+                        unlink($readSubResource[$ki]->getFilePath($kfi));
+                    }
+                    else
+                    {
+                        if(is_array($readSubResource[$ki])) $this->assertTrue($readSubResource[$ki][$kfi] == $vfi);
+                        else $this->assertTrue($readSubResource[$ki]->$kfi == $vfi);
+                    }
+                }
             }
         }
     }
