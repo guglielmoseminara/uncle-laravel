@@ -10,6 +10,7 @@ use UncleProject\UncleLaravel\Classes\BaseRequestParser;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\HasOne;
 
 /**
  * Class RequestCriteria
@@ -213,7 +214,7 @@ class BaseRequestCriteria implements CriteriaInterface
         if ($lastRelation instanceof BelongsToMany) {
             $relatedTable = $relationObject->getTable();
             $translationTable = $this->getTranslatableTable($relationObject->getModel(), $field);
-        } else if ($lastRelation instanceof HasMany || $lastRelation instanceof BelongsTo) {
+        } else if ($lastRelation instanceof HasMany || $lastRelation instanceof BelongsTo || $lastRelation instanceof HasOne) {
             $relatedTable = $relationObject->getRelated()->getTable();
             $translationTable = $this->getTranslatableTable($relationObject->getRelated(), $field);
         }
