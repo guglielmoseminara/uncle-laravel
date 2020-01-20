@@ -160,19 +160,25 @@ class BaseRequestCriteria implements CriteriaInterface
             $sorters = explode('|', $sortedBy);
             foreach($orders as $index => $order)
             {
-                $split = explode('.', $order);
-                if(count($split) > 1) {
+                if(stripos($order, '.')) {
+                    $explode = explode('.', $order);
+                    $field = array_pop($explode);
+                    $relation = implode('.', $explode);
+                }
+                if($relation) {
                     $modelInstance = $model->getModel();
                     $table = $modelInstance->getTable();
                     if (method_exists($modelInstance, 'getJoinField')) {
                         $field = $model->getModel()->getJoinField($order, $sorters[$index]);
                         list($relatedTable, $relatedId) = explode('.', $field);
-                        $model = $model->leftJoin($relatedTable, "$table.id", '=', "$relatedTable.id")->orderBy($field, $sorters[$index]);
+                        $relationKey = $model->getModel()->$relation()->getModel()->getKeyName();
+                        $model = $model->leftJoin($relatedTable, "$table.id", '=', "$relatedTable.$relationKey")->orderBy($field, $sorters[$index]);
                     }
                 } else {
                     $model = $model->orderBy($order, $sorters[$index]);
                 }
             }
+            
         }
 
         if (isset($filter) && !empty($filter)) {
