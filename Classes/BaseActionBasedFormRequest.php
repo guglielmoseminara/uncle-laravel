@@ -8,17 +8,18 @@ use RafflesArgentina\ActionBasedFormRequest\ActionBasedFormRequest;
 
 class BaseActionBasedFormRequest extends ActionBasedFormRequest
 {
-    /**
-     * Get data to be validated from the request.
-     *
-     * @return array
-     */
+
     public static function destroyMany(){
         return [
             'ids'  => 'required|array',
         ];
     }
 
+    /**
+     * Get data to be validated from the request.
+     *
+     * @return array
+     */
     protected function validationData()
     {
         $data = $this->all();

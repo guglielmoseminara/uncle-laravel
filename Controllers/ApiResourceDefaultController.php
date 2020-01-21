@@ -276,7 +276,7 @@ class ApiResourceDefaultController extends ApiResourceController{
         }
 
         DB::commit();
-        
+
         if(method_exists($this,'addMeta')) {
             $meta = $this->addMeta('destroy');
             if($meta){
