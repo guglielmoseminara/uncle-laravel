@@ -214,15 +214,14 @@ abstract class BaseTestCase extends TestCase
             {
                 foreach ($vi as $kfi => $vfi) {
                     if(is_array($vfi)) {
-                        $this->assertArraySubResource($readSubResource[$ki]->$kfi()->get(),$vfi);
+                        $this->assertArraySubResource($readSubResource[$ki]->$kfi()->orderBy('id')->get(),$vfi);
                     }
                     else{
                         if($kfi == 'image') {
                             $this->assertTrue(file_exists($readSubResource[$ki]->getFilePath($kfi)));
                             unlink($readSubResource[$ki]->getFilePath($kfi));
                         }
-                        else
-                        {
+                        else {
                             if(is_array($readSubResource[$ki])) $this->assertTrue($readSubResource[$ki][$kfi] == $vfi);
                             else $this->assertTrue($readSubResource[$ki]->$kfi == $vfi);
                         }
