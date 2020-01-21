@@ -167,7 +167,6 @@ class ApiResourceDefaultController extends ApiResourceController{
         return $this->validSuccessJsonResponse($message, $data);
     }
 
-
     public function update(Request $request, $key) {
         $this->getFormRequestInstance();
         $model = $this->findFirstByKey($key);
@@ -246,6 +245,47 @@ class ApiResourceDefaultController extends ApiResourceController{
             }
         }
         return $requestData;
+    }
+
+    public function destroyMany(Request $request){
+
+        $this->getFormRequestInstance();
+
+        $data = [];
+        $message = '';
+        DB::beginTransaction();
+        foreach($request->get('ids') as $key){
+            $model = $this->findFirstByKey($key);
+
+            if (!$model) {
+                return $this->validNotFoundJsonResponse();
+            }
+
+            try {
+                $this->repository->delete($key);
+            } catch (\Exception $e) {
+                DB::rollback();
+
+                $message = $this->destroyFailedMessage($key, $e->getMessage());
+                throw new ResourceControllerException($message);
+            }
+
+            $message .= $this->destroySuccessfulMessage($key)."! ";
+            array_push($data,$model);
+
+        }
+
+        DB::commit();
+        
+        if(method_exists($this,'addMeta')) {
+            $meta = $this->addMeta('destroy');
+            if($meta){
+                if(!isset($data['meta'])) $data['meta'] = [];
+                $data['meta'] = array_merge($data['meta'], $meta);
+            }
+        }
+
+        return $this->validSuccessJsonResponse($message, $data);
     }
 
     public function destroy(Request $request, $key){

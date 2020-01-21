@@ -13,6 +13,12 @@ class BaseActionBasedFormRequest extends ActionBasedFormRequest
      *
      * @return array
      */
+    public static function destroyMany(){
+        return [
+            'ids'  => 'required|array',
+        ];
+    }
+
     protected function validationData()
     {
         $data = $this->all();
