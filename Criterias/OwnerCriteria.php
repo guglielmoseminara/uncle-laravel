@@ -10,9 +10,13 @@ class OwnerCriteria implements CriteriaInterface {
 
     private $user_id;
 
-    public function __construct() {
-        $user = Auth::user();
-        $this->user_id = $user->id;
+    public function __construct($user_id = null) {
+        if($user_id) $this->user_id = $user_id;
+        else{
+            $user = Auth::user();
+            $this->user_id = $user->id;
+        }
+
     }
 
     public function apply($model, RepositoryInterface $repository)
