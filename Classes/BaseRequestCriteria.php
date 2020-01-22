@@ -29,7 +29,11 @@ class BaseRequestCriteria implements CriteriaInterface
     }
 
     private function buildCondition(&$query, $field, $condition, $value, $or=false) {
-        $valueArr = explode('-', $value);
+        if($condition == 'date') {
+            $valueArr = explode('.', $value);
+            $condition = '=';
+        }
+        else $valueArr = explode('-', $value);
         if (count($valueArr) > 1){
             if ($or) {
                 $query->orWhereBetween($field, $valueArr);
@@ -68,6 +72,7 @@ class BaseRequestCriteria implements CriteriaInterface
                 }
             }
         }
+
     }
 
 
@@ -192,6 +197,7 @@ class BaseRequestCriteria implements CriteriaInterface
             $with = explode(';', $with);
             $model = $model->with($with);
         }
+
         return $model;
     }
 
