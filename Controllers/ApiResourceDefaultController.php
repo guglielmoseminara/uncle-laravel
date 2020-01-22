@@ -181,7 +181,7 @@ class ApiResourceDefaultController extends ApiResourceController{
             $this->beforeUpdate($model, $request);
 
         try {
-            $instance = $this->repository->update($request->all(), $key);
+            $instance = $this->repository->update($request->only($model->getFillable()), $key);
             $model = $instance;
             $mergedRequest = $this->uploadFiles($request, $model);
             $this->updateOrCreateRelations($mergedRequest, $model);
