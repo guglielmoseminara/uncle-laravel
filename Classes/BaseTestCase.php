@@ -108,6 +108,28 @@ abstract class BaseTestCase extends TestCase
         return $keys;
     }
 
+
+    // format response functions
+
+    public function getResponseData($response) {
+        return json_decode($response->getContent())->results->data;
+    }
+
+    public function getResponseDataAsArray($response) {
+        return json_decode($response->getContent(), true)['results']['data'];
+    }
+
+    public function getResponseMeta($response) {
+        return json_decode($response->getContent())->results->meta;
+    }
+
+    public function getResponseMetaAsArray($response) {
+        return json_decode($response->getContent(), true)['results']['meta'];
+    }
+
+
+    // assert functions
+
     public function checkListConditions($rows, $conditions, $conditionType = null) {
         foreach($rows as $row) {
             foreach($conditions as $conditionKey => $conditionValue) {
@@ -124,22 +146,6 @@ abstract class BaseTestCase extends TestCase
                 }
             }
         }
-    }
-
-    public function getResponseData($response) {
-        return json_decode($response->getContent())->results->data;
-    }
-
-    public function getResponseDataAsArray($response) {
-        return json_decode($response->getContent(), true)['results']['data'];
-    }
-
-    public function getResponseMeta($response) {
-        return json_decode($response->getContent())->results->meta;
-    }
-
-    public function getResponseMetaAsArray($response) {
-        return json_decode($response->getContent(), true)['results']['meta'];
     }
 
     public function assertResponseList($response, $modelKeys) {
@@ -233,5 +239,38 @@ abstract class BaseTestCase extends TestCase
                     $this->assertTrue($readSubResource->$ki == $vi);
             }
         }
+    }
+
+    // default tests
+
+    public function defaultTestIndex(){
+
+    }
+
+    public function defaultTestStore(){
+
+    }
+
+    public function defaultTestUpdate(){
+
+    }
+
+    public function defaultTestDelete($userToken, $url, $resource, $faker, $fakerFunction = 'get'){
+
+        $user = App::make($resource)->getFaker($faker)->$fakerFunction();
+        $response = $this->requestWithTest('POST',$url,
+            $user,
+            ['Authorization' => 'Bearer '.$userToken],
+            200,
+            ['results']
+        );
+        $result = $this->getResponseData($response);
+        $response = $this->requestWithTest('DELETE', $url.'/'.$result->id,
+            [],
+            ['Authorization' => 'Bearer '.$userToken], 200,
+            ['results']
+        );
+
+        return $result;
     }
 }
