@@ -3,6 +3,7 @@ namespace UncleProject\UncleLaravel\Classes;
 
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\MorphToMany;
 use Illuminate\Http\Request;
 use Prettus\Repository\Contracts\CriteriaInterface;
 use Prettus\Repository\Contracts\RepositoryInterface;
@@ -223,10 +224,8 @@ class BaseRequestCriteria implements CriteriaInterface
                 $relationObject = $relationObject->getRelated();
             }
         }
-        if ($lastRelation instanceof BelongsToMany) {
-            $relatedTable = $relationObject->getTable();
-            $translationTable = $this->getTranslatableTable($relationObject->getModel(), $field);
-        } else if ($lastRelation instanceof HasMany || $lastRelation instanceof BelongsTo || $lastRelation instanceof HasOne) {
+
+        if ($lastRelation instanceof HasMany || $lastRelation instanceof BelongsTo || $lastRelation instanceof HasOne || $lastRelation instanceof MorphToMany) {
             $relatedTable = $relationObject->getRelated()->getTable();
             $translationTable = $this->getTranslatableTable($relationObject->getRelated(), $field);
         }
