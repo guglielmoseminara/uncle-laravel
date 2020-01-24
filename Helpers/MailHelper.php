@@ -10,7 +10,6 @@ class MailHelper
 {
     public static function send($receiver, Mailable $email){
         try {
-            
             Mail::to($receiver)->send($email);
         }
         catch (\Exception $e) {
