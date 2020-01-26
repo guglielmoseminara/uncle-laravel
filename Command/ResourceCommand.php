@@ -2,10 +2,16 @@
 
 namespace UncleProject\UncleLaravel\Command;
 
-use Illuminate\Console\Command;
+use UncleProject\UncleLaravel\Classes\BaseCommand;
 
-class ResourceCommand extends Command
+class ResourceCommand extends BaseCommand
 {
+
+    private $resourceName;
+    private $resourceSingleName;
+    private $resourcePath;
+
+
     /**
      * The name and signature of the console command.
      *
@@ -33,31 +39,155 @@ class ResourceCommand extends Command
 
     public function handle()
     {
-        $resourceName = ucfirst($this->argument('resource'));
 
-        $resourceNameSingular = str_singular($resourceName);
+        $this->resolveResourceName($this->argument('resource'));
+        $this->resourcePath = app_path('Http'.DIRECTORY_SEPARATOR.'Resources'). DIRECTORY_SEPARATOR. $this->resourceName;
 
-        if($resourceNameSingular == $resourceName){
-            $resourceName = str_plural($resourceNameSingular);
-        }
-
-        $path = app_path('Http'.DIRECTORY_SEPARATOR.'Resources');
-
-        $resourcePath = $path . DIRECTORY_SEPARATOR. $resourceName;
-
-        if (\File::exists($resourcePath)) {
-            $this->error($resourceName  . ' component already exists');
+        if (\File::exists($this->resourcePath)) {
+            $this->error($this->resourceName  . ' resource already exists');
             return;
         }
 
-        \File::makeDirectory($resourcePath);
 
-        \File::makeDirectory($resourcePath.DIRECTORY_SEPARATOR.'Controllers');
-        \File::makeDirectory($resourcePath.DIRECTORY_SEPARATOR.'Fakers');
-        \File::makeDirectory($resourcePath.DIRECTORY_SEPARATOR.'Models');
-        \File::makeDirectory($resourcePath.DIRECTORY_SEPARATOR.'Presenters');
-        \File::makeDirectory($resourcePath.DIRECTORY_SEPARATOR.'Repositories');
-        \File::makeDirectory($resourcePath.DIRECTORY_SEPARATOR.'Requests');
+        \File::makeDirectory($this->resourcePath);
 
+        $this->makeResourceControllers();
+        $this->makeResourceFakers();
+        $this->makeResourceModels();
+        $this->makeResourcePresenters();
+        $this->makeResourceRepositories();
+        $this->makeResourceRequests();
+        $this->makeResourceFile();
+        $this->makeResourceRoute();
+
+        $this->makeDatabaseFile();
+
+    }
+
+    private function resolveResourceName($input){
+
+        $resourceName = ucfirst($input);
+
+        $this->resourceSingleName = str_singular($resourceName);
+
+        if($this->resourceSingleName == $resourceName){
+            $this->resourceName = str_plural($this->resourceSingleName);
+        }
+    }
+
+    private function makeResourceControllers(){
+
+        $controllersPath = $this->resourcePath.DIRECTORY_SEPARATOR.'Controllers';
+        $controllersVersionPath = $this->resourcePath.DIRECTORY_SEPARATOR.'Controllers'.DIRECTORY_SEPARATOR.'V1';
+
+        \File::makeDirectory($controllersPath);
+        \File::makeDirectory($controllersVersionPath);
+
+
+        \File::put(
+            $controllersVersionPath.DIRECTORY_SEPARATOR.$this->resourceSingleName.'Controller.php',
+            $this->compileStub(
+                ['{resourceName}','{resourceSingleName}'],
+                [$this->resourceName,$this->resourceSingleName],
+                __DIR__.'/stubs/Resource/Controller.stub')
+        );
+    }
+
+    private function makeResourceFakers(){
+
+        $fakersPath = $this->resourcePath.DIRECTORY_SEPARATOR.'Fakers';
+        \File::makeDirectory($fakersPath);
+
+        \File::put(
+            $fakersPath.DIRECTORY_SEPARATOR.$this->resourceSingleName.'Faker.php',
+            $this->compileStub(
+                ['{resourceName}','{resourceSingleName}'],
+                [$this->resourceName,$this->resourceSingleName],
+                __DIR__.'/stubs/Resource/Faker.stub')
+        );
+    }
+
+    private function makeResourceModels(){
+
+        $modelsPath = $this->resourcePath.DIRECTORY_SEPARATOR.'Models';
+        \File::makeDirectory($modelsPath);
+
+        \File::put(
+            $modelsPath.DIRECTORY_SEPARATOR.$this->resourceSingleName.'.php',
+            $this->compileStub(
+                ['{resourceName}','{resourceSingleName}'],
+                [$this->resourceName,$this->resourceSingleName],
+                __DIR__.'/stubs/Resource/Model.stub')
+        );
+
+    }
+
+    private function makeResourcePresenters(){
+
+        $presentersPath = $this->resourcePath.DIRECTORY_SEPARATOR.'Presenters';
+        \File::makeDirectory($presentersPath);
+
+        \File::put($presentersPath.DIRECTORY_SEPARATOR.$this->resourceSingleName.'Presenter.php',
+            $this->compileStub(
+                ['{resourceName}','{resourceSingleName}', '{resourceSingleNameLower}'],
+                [$this->resourceName,$this->resourceSingleName, strtolower($this->resourceSingleName)],
+                __DIR__.'/stubs/Resource/Presenter.stub')
+        );
+    }
+
+    private function makeResourceRepositories(){
+
+        $repositoriesPath = $this->resourcePath.DIRECTORY_SEPARATOR.'Repositories';
+        \File::makeDirectory($repositoriesPath);
+
+        \File::put($repositoriesPath.DIRECTORY_SEPARATOR.$this->resourceSingleName.'Repository.php',
+            $this->compileStub(
+                ['{resourceName}','{resourceSingleName}', '{resourceNameLower}', '{resourceSingleNameLower}'],
+                [$this->resourceName,$this->resourceSingleName, strtolower($this->resourceName), strtolower($this->resourceSingleName)],
+                __DIR__.'/stubs/Resource/Repository.stub')
+        );
+
+    }
+
+    private function makeResourceRequests(){
+
+        $requestPath = $this->resourcePath.DIRECTORY_SEPARATOR.'Requests';
+        \File::makeDirectory($requestPath);
+
+        \File::put($requestPath.DIRECTORY_SEPARATOR.$this->resourceSingleName.'Request.php',
+            $this->compileStub(
+                ['{resourceName}','{resourceSingleName}'],
+                [$this->resourceName,$this->resourceSingleName],
+                __DIR__.'/stubs/Resource/Request.stub')
+        );
+
+    }
+
+    private function makeResourceFile(){
+
+        \File::put($this->resourcePath.DIRECTORY_SEPARATOR.$this->resourceName.'Resource.php',
+            $this->compileStub(
+                '{resourceName}',
+                $this->resourceName,
+                __DIR__.'/stubs/Resource/Resource.stub')
+        );
+
+    }
+
+    private function makeResourceRoute(){
+
+        \File::put($this->resourcePath.DIRECTORY_SEPARATOR.$this->resourceName.'Routes.php',
+            $this->compileStub(
+                ['{resourceName}','{resourceSingleName}', '{resourceNameLower}'],
+                [$this->resourceName,$this->resourceSingleName, strtolower($this->resourceName)],
+                __DIR__.'/stubs/Resource/Route.stub')
+        );
+
+    }
+
+    private function makeDatabaseFile(){
+        $this->call('make:migration', [ 'name' => 'create_'.strtolower($this->resourceName).'_table']);
+        $this->call('make:factory', [ 'name' => $this->resourceSingleName.'Factory', '--model' => $this->resourceSingleName]);
+        $this->call('make:seeder', [ 'name' => $this->resourceName.'TableSeeder']);
     }
 }
