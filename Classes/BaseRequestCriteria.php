@@ -166,6 +166,7 @@ class BaseRequestCriteria implements CriteriaInterface
             $sorters = explode('|', $sortedBy);
             foreach($orders as $index => $order)
             {
+                $relation = null;
                 if(stripos($order, '.')) {
                     $explode = explode('.', $order);
                     $field = array_pop($explode);
