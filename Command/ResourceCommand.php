@@ -24,7 +24,7 @@ class ResourceCommand extends BaseCommand
      *
      * @var string
      */
-    protected $description = 'Send drip e-mails to a user';
+    protected $description = 'Create a new resource in project';
 
     /**
      * Create a new command instance.
@@ -39,8 +39,10 @@ class ResourceCommand extends BaseCommand
 
     public function handle()
     {
+        $names = $this->resolveResourceName($this->argument('resource'));
+        $this->resourceSingleName = $names['singular'];
+        $this->resourceName = $names['plural'];
 
-        $this->resolveResourceName($this->argument('resource'));
         $this->resourcePath = app_path('Http'.DIRECTORY_SEPARATOR.'Resources'). DIRECTORY_SEPARATOR. $this->resourceName;
 
         if (\File::exists($this->resourcePath)) {
@@ -64,17 +66,6 @@ class ResourceCommand extends BaseCommand
 
         $this->makeTestFile();
 
-    }
-
-    private function resolveResourceName($input){
-
-        $resourceName = ucfirst($input);
-
-        $this->resourceSingleName = str_singular($resourceName);
-
-        if($this->resourceSingleName == $resourceName){
-            $this->resourceName = str_plural($this->resourceSingleName);
-        }
     }
 
     private function makeResourceControllers(){
