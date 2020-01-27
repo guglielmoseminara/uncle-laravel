@@ -62,6 +62,8 @@ class ResourceCommand extends BaseCommand
 
         $this->makeDatabaseFile();
 
+        $this->makeTestFile();
+
     }
 
     private function resolveResourceName($input){
@@ -189,5 +191,19 @@ class ResourceCommand extends BaseCommand
         $this->call('make:migration', [ 'name' => 'create_'.strtolower($this->resourceName).'_table']);
         $this->call('make:factory', [ 'name' => $this->resourceSingleName.'Factory', '--model' => $this->resourceSingleName]);
         $this->call('make:seeder', [ 'name' => $this->resourceName.'TableSeeder']);
+    }
+
+    private function makeTestFile(){
+
+        $testPath = base_path('tests'.DIRECTORY_SEPARATOR.'Api'.DIRECTORY_SEPARATOR.'V1'.DIRECTORY_SEPARATOR.$this->resourceSingleName);
+        \File::makeDirectory($testPath);
+
+        \File::put($testPath.DIRECTORY_SEPARATOR.$this->resourceSingleName.'Test.php',
+            $this->compileStub(
+                ['{resourceName}','{resourceSingleName}', '{resourceNameLower}', '{resourceSingleNameLower}'],
+                [$this->resourceName,$this->resourceSingleName, strtolower($this->resourceName), strtolower($this->resourceSingleName)],
+                __DIR__.'/stubs/Resource/Test.stub')
+        );
+
     }
 }
