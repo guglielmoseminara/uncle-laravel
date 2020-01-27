@@ -252,7 +252,7 @@ abstract class BaseTestCase extends TestCase
     }
 
     public function defaultTestStore($userToken,$url,$resource, $faker, $fakerFunction = 'get'){
-        $fakerData = App::make($resource)->getFaker($faker)->$fakerFunction();
+        $fakerData = App::make($resource.'Resource')->getFaker($faker)->$fakerFunction();
         $response = $this->requestWithTest('POST', $url, $fakerData,
             ['Authorization' => 'Bearer ' . $userToken],
             200,
@@ -279,7 +279,7 @@ abstract class BaseTestCase extends TestCase
 
     public function defaultTestDelete($userToken, $url, $resource, $faker, $fakerFunction = 'get'){
 
-        $fakerData = App::make($resource)->getFaker($faker)->$fakerFunction();
+        $fakerData = App::make($resource.'Resource')->getFaker($faker)->$fakerFunction();
         $response = $this->requestWithTest('POST',$url,
             $fakerData,
             ['Authorization' => 'Bearer '.$userToken],
