@@ -177,8 +177,10 @@ abstract class BaseTestCase extends TestCase
         $result = $this->getResponseData($response);
         foreach($sendRequest as $key => $value)
         {
-            if(!is_array($value) && isset($result->$key))
+            if(!is_array($value) && isset($result->$key) && stripos($key, 'http') != 0) {
                 $this->assertTrue($result->$key == $value);
+            }
+
         }
     }
 
