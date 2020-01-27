@@ -5,6 +5,7 @@ use Illuminate\Support\ServiceProvider;
 use Illuminate\Support\Facades\Blade;
 use Illuminate\Support\Facades\Schema;
 use Illuminate\Support\Facades\Validator;
+use UncleProject\UncleLaravel\Command\ResourceCommand;
 
 class UncleLaravelServiceProvider extends ServiceProvider
 {
@@ -17,20 +18,20 @@ class UncleLaravelServiceProvider extends ServiceProvider
     {
         Schema::defaultStringLength(191);
         Validator::extendImplicit('latitude',
-            function($attribute, $value, $parameters, $validator) {
+            function ($attribute, $value, $parameters, $validator) {
                 return preg_match('/^[-]?(([0-8]?[0-9])\.(\d+))|(90(\.0+)?)$/', $value);
-        });
-        Validator::extendImplicit('in_or', function($attribute, $value, $parameters, $validator) {
+            });
+        Validator::extendImplicit('in_or', function ($attribute, $value, $parameters, $validator) {
             $flag = true;
             if (!empty($value)) {
                 $values = explode('|', $value);
                 foreach ($values as $orValue) {
                     $flag &= in_array($orValue, $parameters);
-                }    
+                }
             }
             return $flag;
         });
-        Validator::extendImplicit('range_numeric', function($attribute, $value, $parameters, $validator) {
+        Validator::extendImplicit('range_numeric', function ($attribute, $value, $parameters, $validator) {
             $values = explode('-', $value);
             if (count($values) == 1 || count($values) == 2) {
                 $validator = Validator::make($values, [
@@ -43,39 +44,39 @@ class UncleLaravelServiceProvider extends ServiceProvider
                     ]);
                     $result &= !$validator->fails();
                 }
-                return $result;    
+                return $result;
             }
             return false;
         });
         Validator::extendImplicit('longitude',
-            function($attribute, $value, $parameters, $validator) {
+            function ($attribute, $value, $parameters, $validator) {
                 return preg_match('/^[-]?((((1[0-7][0-9])|([0-9]?[0-9]))\.(\d+))|180(\.0+)?)$/', $value);
-        });
-        Validator::extend('phone', function($attribute, $value, $parameters, $validator) {
+            });
+        Validator::extend('phone', function ($attribute, $value, $parameters, $validator) {
             return preg_match('%^(?:(?:\(?(?:00|\+)([1-4]\d\d|[1-9]\d?)\)?)?[\-\.\ \\\/]?)?((?:\(?\d{1,}\)?[\-\.\ \\\/]?){0,})(?:[\-\.\ \\\/]?(?:#|ext\.?|extension|x)[\-\.\ \\\/]?(\d+))?$%i', $value) && strlen($value) >= 10;
         });
-        Validator::replacer('phone', function($message, $attribute, $rule, $parameters) {
-            return str_replace(':attribute',$attribute, ':attribute is invalid phone number');
+        Validator::replacer('phone', function ($message, $attribute, $rule, $parameters) {
+            return str_replace(':attribute', $attribute, ':attribute is invalid phone number');
         });
         Blade::directive('includeActivityResume', function () {
             return '<?php $activityResume = ($activity->price)." ".($activity->currency->symbol)." ".(trans(\'translation.general.perPerson\'))." - ".($activity->duration)." ".(Lang::choice(\'translation.general.hour\', $activity->duration))." - ".(strtoupper($activity->city->name)); ?>';
         });
         Blade::directive('jsonToProp', function ($data) {
-          return "<?php echo (htmlentities(json_encode(with({$data}), JSON_HEX_QUOT), ENT_QUOTES)); ?>";
+            return "<?php echo (htmlentities(json_encode(with({$data}), JSON_HEX_QUOT), ENT_QUOTES)); ?>";
         });
-        $files_components = \File::directories(resource_path('views').DIRECTORY_SEPARATOR.'components');
-        $files_layout = \File::directories(resource_path('views').DIRECTORY_SEPARATOR.'layouts');
-        $files_layout_theme_components = \File::directories(resource_path('views').DIRECTORY_SEPARATOR.'layouts'.DIRECTORY_SEPARATOR.'theme_components');
+        $files_components = \File::directories(resource_path('views') . DIRECTORY_SEPARATOR . 'components');
+        $files_layout = \File::directories(resource_path('views') . DIRECTORY_SEPARATOR . 'layouts');
+        $files_layout_theme_components = \File::directories(resource_path('views') . DIRECTORY_SEPARATOR . 'layouts' . DIRECTORY_SEPARATOR . 'theme_components');
         $files = array_merge($files_components, $files_layout, $files_layout_theme_components);
 
-        foreach ($files as $file)
-        {
-            $path = explode('views'.DIRECTORY_SEPARATOR, $file)[1];
-            $bladefolder = str_replace(DIRECTORY_SEPARATOR,".",$path);
-            $pathPart = explode('.',$bladefolder);
-            $name = end($pathPart );
-            Blade::component($bladefolder.'.component', config('app.components-prefix') . $name);
+        foreach ($files as $file) {
+            $path = explode('views' . DIRECTORY_SEPARATOR, $file)[1];
+            $bladefolder = str_replace(DIRECTORY_SEPARATOR, ".", $path);
+            $pathPart = explode('.', $bladefolder);
+            $name = end($pathPart);
+            Blade::component($bladefolder . '.component', config('app.components-prefix') . $name);
         }
+
     }
 
     /**

@@ -1,0 +1,32 @@
+<?php
+namespace App\Http\Resources\{resourceName}\Presenters;
+
+use Prettus\Repository\Presenter\FractalPresenter;
+use League\Fractal\TransformerAbstract;
+use App\Http\Resources\{resourceName}\Models\{resourceSingleName};
+use App;
+
+class {resourceSingleName}Transformer extends TransformerAbstract
+{
+    public function transform({resourceSingleName} ${resourceSingleNameLower})
+    {
+        $utils = App::make('Utils');
+
+        return [
+            'id'        => ${resourceSingleNameLower}->id,
+
+        ];
+    }
+}
+
+class {resourceSingleName}Presenter extends FractalPresenter {
+
+    /**
+     * Prepare data to present
+     *
+     * @return \League\Fractal\TransformerAbstract
+     */
+    public function getTransformer() {
+      return new {resourceSingleName}Transformer();
+    }
+}

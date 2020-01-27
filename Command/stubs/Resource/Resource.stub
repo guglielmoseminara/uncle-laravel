@@ -1,0 +1,10 @@
+<?php
+
+namespace App\Http\Resources\{resourceName};
+
+use UncleProject\UncleLaravel\Classes\BaseResource;
+
+class {resourceName}Resource extends BaseResource {
+
+    protected $name = '{resourceName}';
+}

@@ -1,0 +1,18 @@
+<?php
+
+namespace App\Http\Resources\{resourceName};
+
+use Illuminate\Http\Request;
+use Dingo\Api\Routing\Router;
+use App;
+
+$api = app(Router::class);
+
+$api->version('v1', function ($api) {
+    $api->get('{resourceNameLower}', App::make('{resourceName}Resource')->getControllerClassPath('{resourceSingleName}').'@index');
+    $api->post('{resourceNameLower}', App::make('{resourceName}Resource')->getControllerClassPath('{resourceSingleName}').'@store');
+    $api->delete('{resourceNameLower}', App::make('{resourceName}Resource')->getControllerClassPath('{resourceSingleName}').'@destroyMany');
+    $api->get('{resourceNameLower}/{id}', App::make('{resourceName}Resource')->getControllerClassPath('{resourceSingleName}').'@show');
+    $api->match(['put', 'patch'],'{resourceNameLower}/{id}', App::make('{resourceName}Resource')->getControllerClassPath('{resourceSingleName}').'@update');
+    $api->delete('{resourceNameLower}/{id}', App::make('{resourceName}Resource')->getControllerClassPath('{resourceSingleName}').'@destroy');
+});
