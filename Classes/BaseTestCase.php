@@ -243,23 +243,45 @@ abstract class BaseTestCase extends TestCase
 
     // default tests
 
-    public function defaultTestIndex(){
+    public function defaultTestIndex($userToken,$url,$resource, $model, $presenter){
+        $response = $this->requestWithTest('GET',$url,[],['Authorization' => 'Bearer '.$userToken], 200, ['results']);
+        $modelKeys = $this->getModelKeys($resource, $model, $presenter);
+        $this->assertResponseList($response, $modelKeys);
 
+        return $response;
     }
 
-    public function defaultTestStore(){
+    public function defaultTestStore($userToken,$url,$resource, $faker, $fakerFunction = 'get'){
+        $fakerData = App::make($resource)->getFaker($faker)->$fakerFunction();
+        $response = $this->requestWithTest('POST', $url, $fakerData,
+            ['Authorization' => 'Bearer ' . $userToken],
+            200,
+            ['results']
+        );
+        $this->assertIsUpdated($response, $fakerData);
 
+        return [ 'response' => $response, 'request' => $fakerData];
     }
 
-    public function defaultTestUpdate(){
+    public function defaultTestUpdate($userToken,$url,$resource, $model, $faker, $fakerFunction = 'get'){
+        $repository = $this->getRepository($resource, $model);
+        $id = $repository->first()->id;
+        $fakerData = App::make($resource.'Resource')->getFaker($faker)->$fakerFunction();
+        $response = $this->requestWithTest('PUT', $url.'/'.$id, $fakerData,
+            ['Authorization' => 'Bearer ' . $userToken],
+            200,
+            ['results']
+        );
+        $this->assertIsUpdated($response, $fakerData);
 
+        return [ 'response' => $response, 'request' => $fakerData];
     }
 
     public function defaultTestDelete($userToken, $url, $resource, $faker, $fakerFunction = 'get'){
 
-        $user = App::make($resource)->getFaker($faker)->$fakerFunction();
+        $fakerData = App::make($resource)->getFaker($faker)->$fakerFunction();
         $response = $this->requestWithTest('POST',$url,
-            $user,
+            $fakerData,
             ['Authorization' => 'Bearer '.$userToken],
             200,
             ['results']
@@ -271,6 +293,6 @@ abstract class BaseTestCase extends TestCase
             ['results']
         );
 
-        return $result;
+        return $response;
     }
 }
