@@ -403,6 +403,34 @@ class ApiResourceDefaultController extends ApiResourceController{
     }
 
     /**
+     * HasOne relation updateOrCreate logic.
+     *
+     * @param array    $fillable The relation fillable.
+     * @param Model    $model    The eloquent model.
+     * @param Relation $relation The eloquent relation.
+     *
+     * @return Model | null
+     */
+    protected function updateOrCreateHasOne(array $fillable, Model $model, Relation $relation)
+    {
+        $id = '';
+
+        if (array_key_exists('id', $fillable)) {
+            $id = $fillable['id'];
+        }
+
+        if (array_except($fillable, ['id'])) {
+            if (property_exists($this, 'pruneHasOne') && $this->pruneHasOne !== false) {
+                $relation->update($fillable);
+            }
+
+            return $relation->updateOrCreate(['id' => $id], $fillable);
+        }
+
+        return null;
+    }
+
+    /**
      * HasMany relation updateOrCreate logic.
      *
      * @param array    $fillable The relation fillable.
@@ -437,6 +465,7 @@ class ApiResourceDefaultController extends ApiResourceController{
             if(isset($record)) $this->updateOrCreateRelations($fields, $record);
 
         }
+
         if ($keys && (property_exists($this, 'pruneHasMany') && $this->pruneHasMany !== false)) {
             $reflection = new \ReflectionClass($model);
             $notIn = $relation->getRelated()->whereHas(strtolower($reflection->getShortName()), function($query) use($model) {
@@ -466,6 +495,7 @@ class ApiResourceDefaultController extends ApiResourceController{
      *
      * @return array
      */
+
     protected function updateOrCreateBelongsToMany(array $fillable, Model $model, Relation $relation)
     {
         $keys = [];

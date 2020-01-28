@@ -187,10 +187,8 @@ abstract class BaseTestCase extends TestCase
     public function assertStoreElementExist ($indexResponse, $storeResponse){
         $indexResult = $this->getResponseData($indexResponse);
         $storeResult = $this->getResponseData($storeResponse);
-        foreach($indexResult as $result)
-        {
-            if($result->id == $storeResult->id)
-            {
+        foreach($indexResult as $result) {
+            if($result->id == $storeResult->id) {
                 $this->assertTrue($result->id == $storeResult->id);
             }
         }
