@@ -251,7 +251,7 @@ abstract class BaseTestCase extends TestCase
         return $response;
     }
 
-    public function defaultTestStore($userToken,$url,$resource, $faker, $fakerFunction = 'get'){
+    public function defaultTestStore($userToken,$url,$resource, $faker, $fakerFunction = 'getStore'){
         $fakerData = App::make($resource.'Resource')->getFaker($faker)->$fakerFunction();
         $response = $this->requestWithTest('POST', $url, $fakerData,
             ['Authorization' => 'Bearer ' . $userToken],
@@ -263,21 +263,19 @@ abstract class BaseTestCase extends TestCase
         return [ 'response' => $response, 'request' => $fakerData];
     }
 
-    public function defaultTestUpdate($userToken,$url,$resource, $model, $faker, $fakerFunction = 'get'){
-        $repository = $this->getRepository($resource, $model);
-        $id = $repository->first()->id;
+    public function defaultTestUpdate($userToken,$url,$resource, $model, $faker, $fakerFunction = 'getUpdate'){
         $fakerData = App::make($resource.'Resource')->getFaker($faker)->$fakerFunction();
-        $response = $this->requestWithTest('PUT', $url.'/'.$id, $fakerData,
+        $response = $this->requestWithTest('PUT', $url.'/'.$fakerData['id'], $fakerData['data'],
             ['Authorization' => 'Bearer ' . $userToken],
             200,
             ['results']
         );
         $this->assertIsUpdated($response, $fakerData);
 
-        return [ 'response' => $response, 'request' => $fakerData];
+        return [ 'response' => $response, 'request' => $fakerData['data']];
     }
 
-    public function defaultTestDelete($userToken, $url, $resource, $faker, $fakerFunction = 'get'){
+    public function defaultTestDelete($userToken, $url, $resource, $faker, $fakerFunction = 'getStore'){
 
         $fakerData = App::make($resource.'Resource')->getFaker($faker)->$fakerFunction();
         $response = $this->requestWithTest('POST',$url,
