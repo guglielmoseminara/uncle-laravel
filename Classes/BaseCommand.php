@@ -24,7 +24,7 @@ class BaseCommand extends Command
     }
 
     protected function compileStub($searchs,$replaces,$stubPath){
-        return str_replace($searchs,$replaces,\File::put($stubPath));
+        return str_replace($searchs,$replaces,\File::get($stubPath));
     }
 
     protected function writeInFile($filename, $search, $insert){
