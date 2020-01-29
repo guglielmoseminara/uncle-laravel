@@ -20,7 +20,7 @@ class RelationCommand extends BaseCommand
      *
      * @var string
      */
-    protected $signature = 'relation:create {parent} {relation} {child}';
+    protected $signature = 'relation:create {parent} {relation} {child} {pivot?}';
 
     /**
      * The console command description.
@@ -56,10 +56,14 @@ class RelationCommand extends BaseCommand
         $this->childPath = app_path('Http'.DIRECTORY_SEPARATOR.'Resources'). DIRECTORY_SEPARATOR. $this->childName;
 
         if (!\File::exists($this->parentPath) || !\File::exists($this->childPath)) {
-            $this->error(' Resources not exists');
+            $this->error('Resources not exists');
             return;
         }
 
+        if (!in_array($this->argument('relation'), ['HasOne', 'HasMany', 'belongsToMany']) || !\File::exists($this->childPath)) {
+            $this->error('Resources not exists');
+            return;
+        }
         $this->resolveRelation($this->argument('relation'));
 
 
