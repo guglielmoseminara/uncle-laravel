@@ -12,6 +12,7 @@ use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasOne;
+use Illuminate\Database\Eloquent\Relations\MorphOne;
 
 /**
  * Class RequestCriteria
@@ -160,7 +161,6 @@ class BaseRequestCriteria implements CriteriaInterface
                 }
             });
         }
-
         if (isset($orderBy) && !empty($orderBy)) {
             $orders = explode('|', $orderBy);
             $sorters = explode('|', $sortedBy);
@@ -225,8 +225,7 @@ class BaseRequestCriteria implements CriteriaInterface
                 $relationObject = $relationObject->getRelated();
             }
         }
-
-        if ($lastRelation instanceof HasMany || $lastRelation instanceof BelongsTo || $lastRelation instanceof HasOne || $lastRelation instanceof MorphToMany) {
+        if ($lastRelation instanceof HasMany || $lastRelation instanceof BelongsTo || $lastRelation instanceof HasOne || $lastRelation instanceof MorphToMany || $lastRelation instanceof MorphOne) {
             $relatedTable = $relationObject->getRelated()->getTable();
             $translationTable = $this->getTranslatableTable($relationObject->getRelated(), $field);
         }
