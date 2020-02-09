@@ -50,7 +50,6 @@ class ResourceCommand extends BaseCommand
             return;
         }
 
-
         \File::makeDirectory($this->resourcePath);
 
         $this->makeResourceControllers();
@@ -65,6 +64,16 @@ class ResourceCommand extends BaseCommand
         $this->makeDatabaseFile();
 
         $this->makeTestFile();
+
+        $this->writeInFile(
+            config_path('app.php'),
+            '//Add Resource - Uncle Comment (No Delete)',
+            $this->compileStub(
+                ['{resourceName}'],
+                [$this->resourceName],
+                __DIR__.'/stubs/Resource/AddResourcePath.stub')
+
+        );
 
     }
 

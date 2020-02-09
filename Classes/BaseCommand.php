@@ -28,6 +28,6 @@ class BaseCommand extends Command
     }
 
     protected function writeInFile($filename, $search, $insert){
-        \File::put($filename, $this->compileStub($search, $search. "\n\n". $insert, \File::get($filename)));
+        \File::put($filename, $this->compileStub($search, $search. "\n". $insert, $filename));
     }
 }
