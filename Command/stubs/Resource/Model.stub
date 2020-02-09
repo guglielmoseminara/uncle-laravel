@@ -12,4 +12,6 @@ class {resourceSingleName} extends Model {
 
     ];
 
+
+    //Add Relations - Uncle Comment (No Delete)
 }
