@@ -154,7 +154,7 @@ class BaseRequestCriteria implements CriteriaInterface
                                     $this->buildCondition($query, $relatedTable.'.'.$field, $condition, $value);
                                 });
                             } else {
-                                $this->buildCondition($query, $modelTableName.'.'.$field, $condition, $value);
+                                $this->buildCondition($query, $modelTableName.'.'.$field, $condition, $value, true);
                             }
                         }
                     }
