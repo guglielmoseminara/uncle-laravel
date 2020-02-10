@@ -17,6 +17,7 @@ class CommandsServiceProvider extends ServiceProvider
     {
         $this->commands([
             \UncleProject\UncleLaravel\Command\Resource\GenerateCommand::class,
+            \UncleProject\UncleLaravel\Command\Resource\ModelCommand::class,
         ]);
     }
 
