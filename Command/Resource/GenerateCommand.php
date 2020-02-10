@@ -1,10 +1,10 @@
 <?php
 
-namespace UncleProject\UncleLaravel\Command;
+namespace UncleProject\UncleLaravel\Command\Resource;
 
 use UncleProject\UncleLaravel\Classes\BaseCommand;
 
-class ResourceCommand extends BaseCommand
+class GenerateCommand extends BaseCommand
 {
 
     private $resourceName;
@@ -17,7 +17,7 @@ class ResourceCommand extends BaseCommand
      *
      * @var string
      */
-    protected $signature = 'resource:create {resource} ';
+    protected $signature = 'resource:generate {resource} ';
 
     /**
      * The console command description.
@@ -71,7 +71,7 @@ class ResourceCommand extends BaseCommand
             $this->compileStub(
                 ['{resourceName}'],
                 [$this->resourceName],
-                __DIR__.'/stubs/Resource/AddResourcePath.stub')
+                __DIR__.'/stubs/AddResourcePath.stub')
 
         );
 
@@ -91,7 +91,7 @@ class ResourceCommand extends BaseCommand
             $this->compileStub(
                 ['{resourceName}','{resourceSingleName}'],
                 [$this->resourceName,$this->resourceSingleName],
-                __DIR__.'/stubs/Resource/Controller.stub')
+                __DIR__.'/stubs/Controller.stub')
         );
     }
 
@@ -105,7 +105,7 @@ class ResourceCommand extends BaseCommand
             $this->compileStub(
                 ['{resourceName}','{resourceSingleName}'],
                 [$this->resourceName,$this->resourceSingleName],
-                __DIR__.'/stubs/Resource/Faker.stub')
+                __DIR__.'/stubs/Faker.stub')
         );
     }
 
@@ -119,7 +119,7 @@ class ResourceCommand extends BaseCommand
             $this->compileStub(
                 ['{resourceName}','{resourceSingleName}'],
                 [$this->resourceName,$this->resourceSingleName],
-                __DIR__.'/stubs/Resource/Model.stub')
+                __DIR__.'/stubs/Model.stub')
         );
 
     }
@@ -133,7 +133,7 @@ class ResourceCommand extends BaseCommand
             $this->compileStub(
                 ['{resourceName}','{resourceSingleName}', '{resourceSingleNameLower}'],
                 [$this->resourceName,$this->resourceSingleName, strtolower($this->resourceSingleName)],
-                __DIR__.'/stubs/Resource/Presenter.stub')
+                __DIR__.'/stubs/Presenter.stub')
         );
     }
 
@@ -146,7 +146,7 @@ class ResourceCommand extends BaseCommand
             $this->compileStub(
                 ['{resourceName}','{resourceSingleName}', '{resourceNameLower}', '{resourceSingleNameLower}'],
                 [$this->resourceName,$this->resourceSingleName, strtolower($this->resourceName), strtolower($this->resourceSingleName)],
-                __DIR__.'/stubs/Resource/Repository.stub')
+                __DIR__.'/stubs/Repository.stub')
         );
 
     }
@@ -160,7 +160,7 @@ class ResourceCommand extends BaseCommand
             $this->compileStub(
                 ['{resourceName}','{resourceSingleName}'],
                 [$this->resourceName,$this->resourceSingleName],
-                __DIR__.'/stubs/Resource/Request.stub')
+                __DIR__.'/stubs/Request.stub')
         );
 
     }
@@ -171,7 +171,7 @@ class ResourceCommand extends BaseCommand
             $this->compileStub(
                 '{resourceName}',
                 $this->resourceName,
-                __DIR__.'/stubs/Resource/Resource.stub')
+                __DIR__.'/stubs/Resource.stub')
         );
 
     }
@@ -182,7 +182,7 @@ class ResourceCommand extends BaseCommand
             $this->compileStub(
                 ['{resourceName}','{resourceSingleName}', '{resourceNameLower}'],
                 [$this->resourceName,$this->resourceSingleName, strtolower($this->resourceName)],
-                __DIR__.'/stubs/Resource/Route.stub')
+                __DIR__.'/stubs/Route.stub')
         );
 
     }
@@ -202,7 +202,7 @@ class ResourceCommand extends BaseCommand
             $this->compileStub(
                 ['{resourceName}','{resourceSingleName}', '{resourceNameLower}', '{resourceSingleNameLower}'],
                 [$this->resourceName,$this->resourceSingleName, strtolower($this->resourceName), strtolower($this->resourceSingleName)],
-                __DIR__.'/stubs/Resource/Test.stub')
+                __DIR__.'/stubs/Test.stub')
         );
 
     }

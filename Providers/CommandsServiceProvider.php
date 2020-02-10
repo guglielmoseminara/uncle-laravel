@@ -3,7 +3,7 @@
 namespace UncleProject\UncleLaravel\Providers;
 
 use Illuminate\Support\ServiceProvider;
-use UncleProject\UncleLaravel\Command\ResourceCommand;
+use UncleProject\UncleLaravel\Command\Resource\GenerateCommand;
 use App;
 
 class CommandsServiceProvider extends ServiceProvider
@@ -16,7 +16,7 @@ class CommandsServiceProvider extends ServiceProvider
     public function register()
     {
         $this->commands([
-            ResourceCommand::class,
+            \UncleProject\UncleLaravel\Command\Resource\GenerateCommand::class,
         ]);
     }
 

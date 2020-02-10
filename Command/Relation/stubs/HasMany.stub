@@ -1,0 +1,3 @@
+        public function {}() {
+            return $this->hasMany(App::make('{}Resource')->getModelClassPath('{}'));
+        }
