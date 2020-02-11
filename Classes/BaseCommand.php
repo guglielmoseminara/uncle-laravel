@@ -10,13 +10,11 @@ class BaseCommand extends Command
         $resourceName = ucfirst($input);
 
         $names = [
-            'singular' => '',
-            'plural' => '',
+            'singular' => str_singular($resourceName),
+            'plural' => str_plural($resourceName),
         ];
 
-        $names['singular']  = str_singular($resourceName);
-
-        if($names['singular'] == $resourceName){
+        if($names['singular'] == $names['plural']){
             $names['plural'] = str_plural($names['singular']);
         }
 

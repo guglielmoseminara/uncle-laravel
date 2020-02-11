@@ -2,15 +2,10 @@
 
 namespace UncleProject\UncleLaravel\Command\Resource;
 
-use UncleProject\UncleLaravel\Classes\BaseCommand;
+use UncleProject\UncleLaravel\Command\Resource\BaseResourceCommand;
 
-class ModelCommand extends BaseCommand
+class ModelCommand extends BaseResourceCommand
 {
-
-    private $resourceName;
-    private $modelName;
-    private $resourcePath;
-
 
     /**
      * The name and signature of the console command.
@@ -53,21 +48,5 @@ class ModelCommand extends BaseCommand
         $this->makeResourceModels($names['singular']);
 
     }
-
-
-    private function makeResourceModels(){
-
-        $modelsPath = $this->resourcePath.DIRECTORY_SEPARATOR.'Models';
-
-        \File::put(
-            $modelsPath.DIRECTORY_SEPARATOR.$this->modelName.'.php',
-            $this->compileStub(
-                ['{resourceName}','{resourceSingleName}'],
-                [$this->resourceName, $this->modelName],
-                __DIR__.'/stubs/Model.stub')
-        );
-
-    }
-
 
 }

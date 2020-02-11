@@ -16,8 +16,8 @@ class BaseResourceCommand extends BaseCommand
         $controllersPath = $this->resourcePath.DIRECTORY_SEPARATOR.'Controllers';
         $controllersVersionPath = $this->resourcePath.DIRECTORY_SEPARATOR.'Controllers'.DIRECTORY_SEPARATOR.'V1';
 
-        \File::makeDirectory($controllersPath);
-        \File::makeDirectory($controllersVersionPath);
+        \File::isDirectory($controllersPath) or\File::makeDirectory($controllersPath);
+        \File::isDirectory($controllersVersionPath) or \File::makeDirectory($controllersVersionPath);
 
 
         \File::put(
@@ -32,7 +32,7 @@ class BaseResourceCommand extends BaseCommand
     protected function makeResourceFakers($resourceSingleName){
 
         $fakersPath = $this->resourcePath.DIRECTORY_SEPARATOR.'Fakers';
-        \File::makeDirectory($fakersPath);
+        \File::isDirectory($fakersPath) or \File::makeDirectory($fakersPath);
 
         \File::put(
             $fakersPath.DIRECTORY_SEPARATOR.$resourceSingleName.'Faker.php',
@@ -46,7 +46,7 @@ class BaseResourceCommand extends BaseCommand
     protected function makeResourceModels($resourceSingleName){
 
         $modelsPath = $this->resourcePath.DIRECTORY_SEPARATOR.'Models';
-        \File::makeDirectory($modelsPath);
+        \File::isDirectory($modelsPath) or \File::makeDirectory($modelsPath);
 
         \File::put(
             $modelsPath.DIRECTORY_SEPARATOR.$resourceSingleName.'.php',
@@ -61,7 +61,7 @@ class BaseResourceCommand extends BaseCommand
     protected function makeResourcePresenters($resourceSingleName){
 
         $presentersPath = $this->resourcePath.DIRECTORY_SEPARATOR.'Presenters';
-        \File::makeDirectory($presentersPath);
+        \File::isDirectory($presentersPath) or \File::makeDirectory($presentersPath);
 
         \File::put($presentersPath.DIRECTORY_SEPARATOR.$resourceSingleName.'Presenter.php',
             $this->compileStub(
@@ -74,7 +74,7 @@ class BaseResourceCommand extends BaseCommand
     protected function makeResourceRepositories($resourceSingleName){
 
         $repositoriesPath = $this->resourcePath.DIRECTORY_SEPARATOR.'Repositories';
-        \File::makeDirectory($repositoriesPath);
+        \File::isDirectory($repositoriesPath) or \File::makeDirectory($repositoriesPath);
 
         \File::put($repositoriesPath.DIRECTORY_SEPARATOR.$resourceSingleName.'Repository.php',
             $this->compileStub(
@@ -88,7 +88,7 @@ class BaseResourceCommand extends BaseCommand
     protected function makeResourceRequests($resourceSingleName){
 
         $requestPath = $this->resourcePath.DIRECTORY_SEPARATOR.'Requests';
-        \File::makeDirectory($requestPath);
+        \File::isDirectory($requestPath) or \File::makeDirectory($requestPath);
 
         \File::put($requestPath.DIRECTORY_SEPARATOR.$resourceSingleName.'Request.php',
             $this->compileStub(
@@ -131,7 +131,7 @@ class BaseResourceCommand extends BaseCommand
     protected function makeTestFile($resourceSingleName){
 
         $testPath = base_path('tests'.DIRECTORY_SEPARATOR.'Api'.DIRECTORY_SEPARATOR.'V1'.DIRECTORY_SEPARATOR.$resourceSingleName);
-        \File::makeDirectory($testPath);
+        \File::isDirectory($testPath) or \File::makeDirectory($testPath);
 
         \File::put($testPath.DIRECTORY_SEPARATOR.$resourceSingleName.'Test.php',
             $this->compileStub(
