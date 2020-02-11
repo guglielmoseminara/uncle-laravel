@@ -2,22 +2,17 @@
 
 namespace UncleProject\UncleLaravel\Command\Resource;
 
-use UncleProject\UncleLaravel\Classes\BaseCommand;
+use UncleProject\UncleLaravel\Command\Resource\BaseResourceCommand;
 
-class ModelCommand extends BaseCommand
+class PresenterCommand extends BaseResourceCommand
 {
-
-    private $resourceName;
-    private $modelName;
-    private $resourcePath;
-
 
     /**
      * The name and signature of the console command.
      *
      * @var string
      */
-    protected $signature = 'resource:create-model {resource} {model}';
+    protected $signature = 'resource:create-presenter {resource} {presenter}';
 
     /**
      * The console command description.
@@ -49,25 +44,13 @@ class ModelCommand extends BaseCommand
             return;
         }
 
-        $names = $this->resolveResourceName($this->argument('model'));
-        $this->makeResourceModels($names['singular']);
+        $names = $this->resolveResourceName($this->argument('presenter'));
+        $this->makeResourcePresenters($names['singular']);
 
     }
 
 
-    private function makeResourceModels(){
 
-        $modelsPath = $this->resourcePath.DIRECTORY_SEPARATOR.'Models';
-
-        \File::put(
-            $modelsPath.DIRECTORY_SEPARATOR.$this->modelName.'.php',
-            $this->compileStub(
-                ['{resourceName}','{resourceSingleName}'],
-                [$this->resourceName, $this->modelName],
-                __DIR__.'/stubs/Model.stub')
-        );
-
-    }
 
 
 }
