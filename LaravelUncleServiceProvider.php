@@ -64,17 +64,25 @@ class UncleLaravelServiceProvider extends ServiceProvider
         Blade::directive('jsonToProp', function ($data) {
             return "<?php echo (htmlentities(json_encode(with({$data}), JSON_HEX_QUOT), ENT_QUOTES)); ?>";
         });
-        $files_components = \File::directories(resource_path('views') . DIRECTORY_SEPARATOR . 'components');
-        $files_layout = \File::directories(resource_path('views') . DIRECTORY_SEPARATOR . 'layouts');
-        $files_layout_theme_components = \File::directories(resource_path('views') . DIRECTORY_SEPARATOR . 'layouts' . DIRECTORY_SEPARATOR . 'theme_components');
-        $files = array_merge($files_components, $files_layout, $files_layout_theme_components);
 
-        foreach ($files as $file) {
-            $path = explode('views' . DIRECTORY_SEPARATOR, $file)[1];
-            $bladefolder = str_replace(DIRECTORY_SEPARATOR, ".", $path);
-            $pathPart = explode('.', $bladefolder);
-            $name = end($pathPart);
-            Blade::component($bladefolder . '.component', config('app.components-prefix') . $name);
+        $componentsPath = resource_path('views') . DIRECTORY_SEPARATOR . 'components';
+        $layoutsPath = resource_path('views') . DIRECTORY_SEPARATOR . 'layouts';
+        $layoutComponentsPath = resource_path('views') . DIRECTORY_SEPARATOR . 'layouts' . DIRECTORY_SEPARATOR . 'theme_components';
+
+        if(\File::isDirectory($componentsPath) && \File::isDirectory($layoutsPath) && \File::isDirectory($layoutComponentsPath))
+        {
+            $files_components = \File::directories($componentsPath);
+            $files_layout = \File::directories($layoutsPath);
+            $files_layout_theme_components = \File::directories($layoutComponentsPath);
+            $files = array_merge($files_components, $files_layout, $files_layout_theme_components);
+
+            foreach ($files as $file) {
+                $path = explode('views' . DIRECTORY_SEPARATOR, $file)[1];
+                $bladefolder = str_replace(DIRECTORY_SEPARATOR, ".", $path);
+                $pathPart = explode('.', $bladefolder);
+                $name = end($pathPart);
+                Blade::component($bladefolder . '.component', config('app.components-prefix') . $name);
+            }
         }
 
     }
