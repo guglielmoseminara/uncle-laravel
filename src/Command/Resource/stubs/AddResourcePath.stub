@@ -1,0 +1,1 @@
+        '{resourceName}' => App\Http\Resources\{resourceName}\{resourceName}Resource::class,
