@@ -27,8 +27,18 @@
     },
     "autoload": {
         "psr-4": {
-            "UncleProject\\UncleLaravel\\": ""
+            "UncleProject\\UncleLaravel\\": "src/"
         }
+    },
+    "extra": {
+      "laravel": {
+        "providers": [
+          "UncleProject\\UncleLaravel\\UncleLaravelServiceProvider",
+          "UncleProject\\UncleLaravel\\Providers\\CommandsServiceProvider",
+          "UncleProject\\UncleLaravel\\Providers\\ResourcesServiceProvider",
+          "UncleProject\\UncleLaravel\\Providers\\UtilsServiceProvider"
+        ]
+      }
     },
     "config": {
         "optimize-autoloader": true,

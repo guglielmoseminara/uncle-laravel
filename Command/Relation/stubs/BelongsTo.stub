@@ -1,3 +1,0 @@
-        public function {}() {
-            return $this->belongsTo(App::make('{}Resource')->getModelClassPath('{}}'));
-        }

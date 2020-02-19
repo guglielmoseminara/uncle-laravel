@@ -1,3 +1,0 @@
-        public function {}() {
-            return $this->belongsToMany(App::make('{}Resource')->getModelClassPath('{}}'));
-        }
