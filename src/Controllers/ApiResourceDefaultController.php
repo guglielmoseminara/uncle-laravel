@@ -114,18 +114,6 @@ class ApiResourceDefaultController extends ApiResourceController{
         return $this->repository->paginate($perPage);
     }
 
-    public function updateOrCreateRelations($requestData, Model $model) {
-        foreach ($requestData as $name => $attributes) {
-            if (is_array($attributes)) {
-                if($this->_checkRelationExists($model, $name))
-                {
-                    $relation = $model->{$name}();
-                    $this->handleRelations($attributes, $model, $relation);
-                }
-            }
-        }
-    }
-
     public function store(Request $request) {
         $this->getFormRequestInstance();
 
@@ -403,6 +391,28 @@ class ApiResourceDefaultController extends ApiResourceController{
     }
 
     /**
+     * Handle relations.
+     *
+     * @param array    $fillable The relation fillable.
+     * @param Model    $model    The eloquent model.
+     * @param Relation $relation The eloquent relation.
+     *
+     * @return void
+     */
+
+    public function updateOrCreateRelations($requestData, Model $model) {
+        foreach ($requestData as $name => $attributes) {
+            if (is_array($attributes)) {
+                if($this->_checkRelationExists($model, $name))
+                {
+                    $relation = $model->{$name}();
+                    $this->handleRelations($attributes, $model, $relation);
+                }
+            }
+        }
+    }
+
+    /**
      * HasOne relation updateOrCreate logic.
      *
      * @param array    $fillable The relation fillable.
@@ -423,7 +433,6 @@ class ApiResourceDefaultController extends ApiResourceController{
             if (property_exists($this, 'pruneHasOne') && $this->pruneHasOne !== false) {
                 $relation->update($fillable);
             }
-
             return $relation->updateOrCreate(['id' => $id], $fillable);
         }
 
@@ -483,6 +492,38 @@ class ApiResourceDefaultController extends ApiResourceController{
         $type = File::mimeType($filePath);
         $file = File::get($filePath);
         return $this->validSuccessImageResponse($file, $type);
+    }
+
+
+    /**
+     * BelongsToOne relation updateOrCreate logic.
+     *
+     * @param array    $fillable The relation fillable.
+     * @param Model    $model    The eloquent model.
+     * @param Relation $relation The eloquent relation.
+     *
+     * @return Model
+     */
+    protected function updateOrCreateBelongsToOne(array $fillable, Model $model, Relation $relation)
+    {
+        $related = $relation->getRelated();
+
+        if (array_key_exists('id', $fillable)) {
+            $record = $relation->associate($related->find($fillable['id']));
+            return $record;
+        }
+
+        if (array_except($fillable, ['id'])) {
+            if (!$relation->first()) {
+                $record = $relation->associate($related->create($fillable));
+                $model->save();
+            } else {
+                $record = $relation->update($fillable);
+            }
+            return $record;
+        }
+
+        return null;
     }
 
 
