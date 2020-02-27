@@ -373,7 +373,7 @@ class ApiResourceDefaultController extends ApiResourceController{
         $this->moveUploadedFile($uploadedFile, $filename, $relativePath);
 
         $location = $filename;
-        
+
         if(in_array($paramName.'_name', $model->getFillable())) $model->{$paramName.'_name'} = $originalName;
         $model->{$paramName} = $location;
         $model->save();
