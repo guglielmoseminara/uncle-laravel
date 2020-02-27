@@ -366,13 +366,15 @@ class ApiResourceDefaultController extends ApiResourceController{
             throw new UploadException($uploadedFile->getError());
         }
 
+        $originalName = $uploadedFile->getClientOriginalName();
         $filename = $this->getFilename($uploadedFile);
         $destination = $this->getStoragePath($relativePath);
 
         $this->moveUploadedFile($uploadedFile, $filename, $relativePath);
 
         $location = $filename;
-
+        
+        if(in_array($paramName.'_name', $model->getFillable())) $model->{$paramName.'_name'} = $originalName;
         $model->{$paramName} = $location;
         $model->save();
     }
