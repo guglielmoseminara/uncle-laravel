@@ -58,6 +58,24 @@ class UncleLaravelServiceProvider extends ServiceProvider
             return str_replace(':attribute',$attribute, ':attribute is invalid phone number');
         });
 
+
+        // load migrations in Resources
+
+        $migrationFromResources = [];
+        $resourcesPath = app_path().DIRECTORY_SEPARATOR.'Http'.DIRECTORY_SEPARATOR.'Resources'.DIRECTORY_SEPARATOR;
+        $resourcesDatabasePath = DIRECTORY_SEPARATOR.'Database';
+        $resourcesMigrationPath = $resourcesDatabasePath.DIRECTORY_SEPARATOR.'migrations';
+
+        foreach (config('app.resources') as $key => $value)
+        {
+            if(\File::isDirectory($resourcesPath.$key.$resourcesDatabasePath) && \File::isDirectory($resourcesPath.$key.$resourcesMigrationPath))
+                array_push($migrationFromResources,$resourcesPath.$key.$resourcesMigrationPath);
+        }
+
+        $this->loadMigrationsFrom(
+            $migrationFromResources
+        );
+
     }
 
     /**
