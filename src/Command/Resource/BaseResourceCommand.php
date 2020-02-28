@@ -126,12 +126,10 @@ class BaseResourceCommand extends BaseCommand
         $databasePath = $this->resourcePath.DIRECTORY_SEPARATOR.'Database';
         \File::isDirectory($databasePath) or \File::makeDirectory($databasePath);
 
-
         $migrationPath = $databasePath.DIRECTORY_SEPARATOR.'migrations';
         \File::isDirectory($migrationPath) or \File::makeDirectory($migrationPath);
 
         $this->call('make:migration', [ 'name' => 'create_'.strtolower($this->resourceName).'_table', '--path' => str_replace(app_path(), "app", $migrationPath)]);
-
 
 
         $this->call('make:factory', [ 'name' => $resourceSingleName.'Factory', '--model' => $resourceSingleName]);
