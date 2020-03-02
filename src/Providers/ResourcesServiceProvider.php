@@ -22,24 +22,27 @@ class ResourcesServiceProvider extends ServiceProvider
         $resourcesPath = app_path() . DIRECTORY_SEPARATOR . 'Http' . DIRECTORY_SEPARATOR . 'Resources' . DIRECTORY_SEPARATOR;
         $resourcesDatabasePath = DIRECTORY_SEPARATOR . 'Database';
         $resourcesMigrationPath = $resourcesDatabasePath . DIRECTORY_SEPARATOR . 'migrations';
+        $resourcesFactoriesPath = $resourcesDatabasePath . DIRECTORY_SEPARATOR . 'factories';
 
         foreach(config('app.resources') as $resource => $classPath) {
             $this->app->singleton($resource.'Resource', function ($app) use ($classPath) {
                 return new $classPath($app);
             });
 
-            if (\File::isDirectory($resourcesPath . $resource . $resourcesDatabasePath) && \File::isDirectory($resourcesPath . $resource . $resourcesMigrationPath))
-                array_push($migrationFromResources, $resourcesPath . $resource . $resourcesMigrationPath);
+            if (\File::isDirectory($resourcesPath . $resource . $resourcesDatabasePath))
+            {
+                if(\File::isDirectory($resourcesPath . $resource . $resourcesMigrationPath))
+                    array_push($migrationFromResources, $resourcesPath . $resource . $resourcesMigrationPath);
+
+                if (! app()->environment('production') && $this->app->runningInConsole() && \File::isDirectory($resourcesPath . $resource . $resourcesFactoriesPath)) {
+                    app(Factory::class)->load($resourcesPath . $resource . $resourcesFactoriesPath);
+                }
+            }
         }
 
-        // load migrations in Resources
-        $this->loadMigrationsFrom(
-            $migrationFromResources
-        );
 
-        /*if (! app()->environment('production') && $this->app->runningInConsole()) {
-            app(Factory::class)->load;
-        }*/
+        $this->loadMigrationsFrom($migrationFromResources);
+
     }
 
     /**
