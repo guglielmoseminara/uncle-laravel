@@ -5,6 +5,7 @@ use Illuminate\Support\ServiceProvider;
 use Illuminate\Support\Facades\Blade;
 use Illuminate\Support\Facades\Schema;
 use Illuminate\Support\Facades\Validator;
+use UncleProject\UncleLaravel\Helpers\Utils;
 
 class UncleLaravelServiceProvider extends ServiceProvider
 {
@@ -67,6 +68,9 @@ class UncleLaravelServiceProvider extends ServiceProvider
      */
     public function register()
     {
+        $this->app->singleton('Utils', function ($app) {
+            return new Utils($app);
+        });
 
         $this->app->singleton(FakerGenerator::class, function ($app) {
             $faker = FakerFactory::create($app['config']->get('app.faker_locale', 'en_US'));

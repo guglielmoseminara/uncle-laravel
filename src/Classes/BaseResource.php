@@ -1,6 +1,7 @@
 <?php
 
 namespace UncleProject\UncleLaravel\Classes;
+
 use App;
 
 class BaseResource {

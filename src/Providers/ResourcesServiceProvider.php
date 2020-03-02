@@ -3,6 +3,7 @@
 namespace UncleProject\UncleLaravel\Providers;
 
 use Illuminate\Support\ServiceProvider;
+use Illuminate\Database\Eloquent\Factory;
 use App;
 
 class ResourcesServiceProvider extends ServiceProvider
@@ -39,7 +40,6 @@ class ResourcesServiceProvider extends ServiceProvider
                 }
             }
         }
-
 
         $this->loadMigrationsFrom($migrationFromResources);
 

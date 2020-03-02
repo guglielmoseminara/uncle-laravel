@@ -15,9 +15,7 @@ class UtilsServiceProvider extends ServiceProvider
      */
     public function register()
     {
-        $this->app->singleton('Utils', function ($app) {
-            return new Utils($app);
-        });
+
     }
 
     /**
@@ -27,6 +25,7 @@ class UtilsServiceProvider extends ServiceProvider
      */
     public function boot()
     {
+
     }
 
 }

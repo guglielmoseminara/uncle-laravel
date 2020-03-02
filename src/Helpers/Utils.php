@@ -1,6 +1,7 @@
 <?php
 
 namespace UncleProject\UncleLaravel\Helpers;
+
 use PhpParser\ErrorHandler\Collecting;
 use League\Fractal\Manager;
 use League\Fractal\Serializer\DataArraySerializer;
