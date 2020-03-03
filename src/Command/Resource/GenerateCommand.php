@@ -68,8 +68,9 @@ class GenerateCommand extends BaseResourceCommand
                 ['{resourceName}'],
                 [$this->resourceName],
                 __DIR__.'/stubs/AddResourcePath.stub')
-
         );
+
+        $this->info("Resource {$this->resourceName} generate successfully");
 
     }
 }

@@ -16,6 +16,10 @@ class UncleLaravelServiceProvider extends ServiceProvider
      */
     public function boot()
     {
+        $this->publishes([
+            __DIR__.'/../config/uncle.php' => config_path('uncle.php'),
+        ]);
+
         Schema::defaultStringLength(191);
         Validator::extendImplicit('latitude',
             function ($attribute, $value, $parameters, $validator) {
