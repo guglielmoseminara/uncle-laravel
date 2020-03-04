@@ -7,6 +7,13 @@ use Illuminate\Support\Facades\Schema;
 use Illuminate\Support\Facades\Validator;
 use UncleProject\UncleLaravel\Helpers\Utils;
 
+use Faker\Factory as FakerFactory;
+use Faker\Generator as FakerGenerator;
+use Bezhanov\Faker\ProviderCollectionHelper;
+use RicLeP\Faker\LoremFlickrFakerProvider;
+
+
+
 class UncleLaravelServiceProvider extends ServiceProvider
 {
     /**
@@ -72,17 +79,17 @@ class UncleLaravelServiceProvider extends ServiceProvider
      */
     public function register()
     {
-        $this->app->singleton('Utils', function ($app) {
-            return new Utils($app);
-        });
-
         $this->app->singleton(FakerGenerator::class, function ($app) {
+            echo 'qui';
             $faker = FakerFactory::create($app['config']->get('app.faker_locale', 'en_US'));
             ProviderCollectionHelper::addAllProvidersTo($faker);
             $faker->addProvider(new LoremFlickrFakerProvider($faker));
             return $faker;
         });
 
+        $this->app->singleton('Utils', function ($app) {
+            return new Utils($app);
+        });
     }
 
 }
