@@ -80,7 +80,6 @@ class UncleLaravelServiceProvider extends ServiceProvider
     public function register()
     {
         $this->app->singleton(FakerGenerator::class, function ($app) {
-            echo 'qui';
             $faker = FakerFactory::create($app['config']->get('app.faker_locale', 'en_US'));
             ProviderCollectionHelper::addAllProvidersTo($faker);
             $faker->addProvider(new LoremFlickrFakerProvider($faker));
