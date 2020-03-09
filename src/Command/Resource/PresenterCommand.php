@@ -47,6 +47,8 @@ class PresenterCommand extends BaseResourceCommand
         $names = $this->resolveResourceName($this->argument('presenter'));
         $this->makeResourcePresenters($names['singular']);
 
+        $this->info("Presenter {$names['singular']} in Resource {$this->resourceName} generate successfully");
+
     }
 
 

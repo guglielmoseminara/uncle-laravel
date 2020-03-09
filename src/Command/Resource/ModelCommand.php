@@ -47,7 +47,8 @@ class ModelCommand extends BaseResourceCommand
         $names = $this->resolveResourceName($this->argument('model'));
         $this->makeResourceModels($names['singular']);
 
-        $this->info($names['singular']  . ' model  not exists');
+        $this->info("Model {$names['singular']} in Resource {$this->resourceName} generate successfully");
+
     }
 
 }

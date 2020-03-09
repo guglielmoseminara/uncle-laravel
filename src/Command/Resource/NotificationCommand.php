@@ -46,6 +46,7 @@ class NotificationCommand extends BaseResourceCommand
 
         $this->makeResourceNotifications($this->argument('notification'));
 
+        $this->info("Notification {$this->argument('notification')} in Resource {$this->resourceName} generate successfully");
     }
 
 
