@@ -19,6 +19,7 @@ class CommandsServiceProvider extends ServiceProvider
             \UncleProject\UncleLaravel\Command\Resource\GenerateCommand::class,
             \UncleProject\UncleLaravel\Command\Resource\ModelCommand::class,
             \UncleProject\UncleLaravel\Command\Resource\PresenterCommand::class,
+            \UncleProject\UncleLaravel\Command\Resource\NotificationCommand::class,
         ]);
     }
 

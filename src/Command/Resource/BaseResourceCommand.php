@@ -136,7 +136,6 @@ class BaseResourceCommand extends BaseCommand
         $this->call('make:seeder', [ 'name' => $this->resourceName.'TableSeeder']);
     }
 
-    
     protected function makeTestFile($resourceSingleName){
 
         $testPath = base_path('tests'.DIRECTORY_SEPARATOR.'Api'.DIRECTORY_SEPARATOR.'V1'.DIRECTORY_SEPARATOR.$resourceSingleName);
@@ -149,5 +148,32 @@ class BaseResourceCommand extends BaseCommand
                 __DIR__.'/stubs/Test.stub')
         );
 
+    }
+
+    protected function makeResourceNotifications($notificationName){
+
+        $notificationsPath = $this->resourcePath.DIRECTORY_SEPARATOR.'Notifications';
+        $notificationsViewsPath = $this->resourcePath.DIRECTORY_SEPARATOR.'Notifications'.DIRECTORY_SEPARATOR.'mails';
+
+        \File::isDirectory($notificationsPath) or\File::makeDirectory($notificationsViewsPath);
+
+        \File::put(
+            $notificationsPath.DIRECTORY_SEPARATOR.$notificationName.'Notification.php',
+            $this->compileStub(
+                ['{resourceName}','{notificationName}'],
+                [$this->resourceName,$notificationName],
+                __DIR__.'/stubs/Notification.stub')
+        );
+
+
+        \File::isDirectory($notificationsViewsPath) or \File::makeDirectory($notificationsViewsPath);
+
+        \File::put(
+            $notificationsViewsPath.DIRECTORY_SEPARATOR.$notificationName.'Mail.blade.php',
+            $this->compileStub(
+                ['{resourceName}','{notificationName}'],
+                [$this->resourceName,$notificationName],
+                __DIR__.'/stubs/Mail.stub')
+        );
     }
 }

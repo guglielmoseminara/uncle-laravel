@@ -4,7 +4,7 @@ namespace UncleProject\UncleLaravel\Command\Resource;
 
 use UncleProject\UncleLaravel\Command\Resource\BaseResourceCommand;
 
-class ModelCommand extends BaseResourceCommand
+class NotificationCommand extends BaseResourceCommand
 {
 
     /**
@@ -12,7 +12,7 @@ class ModelCommand extends BaseResourceCommand
      *
      * @var string
      */
-    protected $signature = 'resource:create-model {resource} {model}';
+    protected $signature = 'resource:create-notification {resource} {notification}';
 
     /**
      * The console command description.
@@ -44,10 +44,12 @@ class ModelCommand extends BaseResourceCommand
             return;
         }
 
-        $names = $this->resolveResourceName($this->argument('model'));
-        $this->makeResourceModels($names['singular']);
+        $this->makeResourceNotifications($this->argument('notification'));
 
-        $this->info($names['singular']  . ' model  not exists');
     }
+
+
+
+
 
 }

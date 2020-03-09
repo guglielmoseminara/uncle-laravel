@@ -1,0 +1,10 @@
+@component('mail::message')
+
+
+
+
+
+
+
+
+@endcomponent
