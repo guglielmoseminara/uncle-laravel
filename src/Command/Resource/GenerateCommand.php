@@ -71,6 +71,5 @@ class GenerateCommand extends BaseResourceCommand
         );
 
         $this->info("Resource {$this->resourceName} generate successfully");
-
     }
 }

@@ -1,0 +1,21 @@
+<?php
+
+namespace App\Http\Resources\{resourceName}\Database\seeders;
+
+use Illuminate\Database\Seeder;
+use App;
+
+class {resourceName}TableSeeder extends Seeder
+{
+    /**
+     * Run the database seeds.
+     *
+     * @return void
+     */
+    public function run()
+    {
+        ${resourceSingleNameLower}Class = App::make('{resourceName}')->getModelClassPath('{resourceSingleName}');
+
+        factory(${resourceSingleNameLower}Class, 10)->create();
+    }
+}

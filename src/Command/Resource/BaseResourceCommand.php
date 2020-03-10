@@ -10,6 +10,8 @@ class BaseResourceCommand extends BaseCommand
     protected $resourceName;
     protected $resourcePath;
 
+    protected $arraySearch = ['{resourceName}','{resourceSingleName}', '{resourceNameLower}', '{resourceSingleNameLower}'];
+
     
     protected function makeResourceControllers($resourceSingleName){
 
@@ -23,8 +25,8 @@ class BaseResourceCommand extends BaseCommand
         \File::put(
             $controllersVersionPath.DIRECTORY_SEPARATOR.$resourceSingleName.'Controller.php',
             $this->compileStub(
-                ['{resourceName}','{resourceSingleName}'],
-                [$this->resourceName,$resourceSingleName],
+                $this->arraySearch,
+                [$this->resourceName, $resourceSingleName, strtolower($this->resourceName), strtolower($resourceSingleName)],
                 __DIR__.'/stubs/Controller.stub')
         );
     }
@@ -37,8 +39,8 @@ class BaseResourceCommand extends BaseCommand
         \File::put(
             $fakersPath.DIRECTORY_SEPARATOR.$resourceSingleName.'Faker.php',
             $this->compileStub(
-                ['{resourceName}','{resourceSingleName}'],
-                [$this->resourceName,$resourceSingleName],
+                $this->arraySearch,
+                [$this->resourceName, $resourceSingleName, strtolower($this->resourceName), strtolower($resourceSingleName)],
                 __DIR__.'/stubs/Faker.stub')
         );
     }
@@ -51,7 +53,7 @@ class BaseResourceCommand extends BaseCommand
         \File::put(
             $modelsPath.DIRECTORY_SEPARATOR.$resourceSingleName.'.php',
             $this->compileStub(
-                ['{resourceName}','{resourceSingleName}'],
+                $this->arraySearch,
                 [$this->resourceName,$resourceSingleName],
                 __DIR__.'/stubs/Model.stub')
         );
@@ -65,8 +67,8 @@ class BaseResourceCommand extends BaseCommand
 
         \File::put($presentersPath.DIRECTORY_SEPARATOR.$resourceSingleName.'Presenter.php',
             $this->compileStub(
-                ['{resourceName}','{resourceSingleName}', '{resourceSingleNameLower}'],
-                [$this->resourceName,$resourceSingleName, strtolower($resourceSingleName)],
+                $this->arraySearch,
+                [$this->resourceName, $resourceSingleName, strtolower($this->resourceName), strtolower($resourceSingleName)],
                 __DIR__.'/stubs/Presenter.stub')
         );
     }
@@ -78,8 +80,8 @@ class BaseResourceCommand extends BaseCommand
 
         \File::put($repositoriesPath.DIRECTORY_SEPARATOR.$resourceSingleName.'Repository.php',
             $this->compileStub(
-                ['{resourceName}','{resourceSingleName}', '{resourceNameLower}', '{resourceSingleNameLower}'],
-                [$this->resourceName,$resourceSingleName, strtolower($this->resourceName), strtolower($resourceSingleName)],
+                $this->arraySearch,
+                [$this->resourceName, $resourceSingleName, strtolower($this->resourceName), strtolower($resourceSingleName)],
                 __DIR__.'/stubs/Repository.stub')
         );
 
@@ -92,8 +94,8 @@ class BaseResourceCommand extends BaseCommand
 
         \File::put($requestPath.DIRECTORY_SEPARATOR.$resourceSingleName.'Request.php',
             $this->compileStub(
-                ['{resourceName}','{resourceSingleName}'],
-                [$this->resourceName,$resourceSingleName],
+                $this->arraySearch,
+                [$this->resourceName, $resourceSingleName, strtolower($this->resourceName), strtolower($resourceSingleName)],
                 __DIR__.'/stubs/Request.stub')
         );
 
@@ -103,7 +105,7 @@ class BaseResourceCommand extends BaseCommand
 
         \File::put($this->resourcePath.DIRECTORY_SEPARATOR.$this->resourceName.'Resource.php',
             $this->compileStub(
-                '{resourceName}',
+                $this->arraySearch,
                 $this->resourceName,
                 __DIR__.'/stubs/Resource.stub')
         );
@@ -114,8 +116,8 @@ class BaseResourceCommand extends BaseCommand
 
         \File::put($this->resourcePath.DIRECTORY_SEPARATOR.$this->resourceName.'Routes.php',
             $this->compileStub(
-                ['{resourceName}','{resourceSingleName}', '{resourceNameLower}'],
-                [$this->resourceName,$resourceSingleName, strtolower($this->resourceName)],
+                $this->arraySearch,
+                [$this->resourceName, $resourceSingleName, strtolower($this->resourceName), strtolower($resourceSingleName)],
                 __DIR__.'/stubs/Route.stub')
         );
 
@@ -131,9 +133,25 @@ class BaseResourceCommand extends BaseCommand
 
         $this->call('make:migration', [ 'name' => 'create_'.strtolower($this->resourceName).'_table', '--path' => str_replace(app_path(), "app", $migrationPath)]);
 
+        $factoriesPath = $databasePath.DIRECTORY_SEPARATOR.'factories';
+        \File::isDirectory($factoriesPath) or \File::makeDirectory($factoriesPath);
 
-        $this->call('make:factory', [ 'name' => $resourceSingleName.'Factory', '--model' => $resourceSingleName]);
-        $this->call('make:seeder', [ 'name' => $this->resourceName.'TableSeeder']);
+        \File::put($factoriesPath.DIRECTORY_SEPARATOR.$resourceSingleName.'Factory.php',
+            $this->compileStub(
+                $this->arraySearch,
+                [$this->resourceName, $resourceSingleName, strtolower($this->resourceName), strtolower($resourceSingleName)],
+                __DIR__.'/stubs/Factory.stub')
+        );
+
+        $seedersPath = $databasePath.DIRECTORY_SEPARATOR.'seeders';
+        \File::isDirectory($seedersPath) or \File::makeDirectory($seedersPath);
+
+        \File::put($seedersPath.DIRECTORY_SEPARATOR.$this->resourceName.'Seeder.php',
+            $this->compileStub(
+                $this->arraySearch,
+                [$this->resourceName, $resourceSingleName, strtolower($this->resourceName), strtolower($resourceSingleName)],
+                __DIR__.'/stubs/Seeder.stub')
+        );
     }
 
     protected function makeTestFile($resourceSingleName){
@@ -143,37 +161,10 @@ class BaseResourceCommand extends BaseCommand
 
         \File::put($testPath.DIRECTORY_SEPARATOR.$resourceSingleName.'Test.php',
             $this->compileStub(
-                ['{resourceName}','{resourceSingleName}', '{resourceNameLower}', '{resourceSingleNameLower}'],
-                [$this->resourceName,$resourceSingleName, strtolower($this->resourceName), strtolower($resourceSingleName)],
+                $this->arraySearch,
+                [$this->resourceName, $resourceSingleName, strtolower($this->resourceName), strtolower($resourceSingleName)],
                 __DIR__.'/stubs/Test.stub')
         );
 
-    }
-
-    protected function makeResourceNotifications($notificationName){
-
-        $notificationsPath = $this->resourcePath.DIRECTORY_SEPARATOR.'Notifications';
-        $notificationsViewsPath = $this->resourcePath.DIRECTORY_SEPARATOR.'Notifications'.DIRECTORY_SEPARATOR.'mails';
-
-        \File::isDirectory($notificationsPath) or\File::makeDirectory($notificationsViewsPath);
-
-        \File::put(
-            $notificationsPath.DIRECTORY_SEPARATOR.$notificationName.'Notification.php',
-            $this->compileStub(
-                ['{resourceName}','{notificationName}'],
-                [$this->resourceName,$notificationName],
-                __DIR__.'/stubs/Notification.stub')
-        );
-
-
-        \File::isDirectory($notificationsViewsPath) or \File::makeDirectory($notificationsViewsPath);
-
-        \File::put(
-            $notificationsViewsPath.DIRECTORY_SEPARATOR.$notificationName.'Mail.blade.php',
-            $this->compileStub(
-                ['{resourceName}','{notificationName}'],
-                [$this->resourceName,$notificationName],
-                __DIR__.'/stubs/Mail.stub')
-        );
     }
 }

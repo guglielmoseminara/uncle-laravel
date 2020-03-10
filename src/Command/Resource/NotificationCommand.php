@@ -50,7 +50,32 @@ class NotificationCommand extends BaseResourceCommand
     }
 
 
+    protected function makeResourceNotifications($notificationName){
 
+        $notificationsPath = $this->resourcePath.DIRECTORY_SEPARATOR.'Notifications';
+        $notificationsViewsPath = $this->resourcePath.DIRECTORY_SEPARATOR.'Notifications'.DIRECTORY_SEPARATOR.'mails';
+
+        \File::isDirectory($notificationsPath) or\File::makeDirectory($notificationsViewsPath);
+
+        \File::put(
+            $notificationsPath.DIRECTORY_SEPARATOR.$notificationName.'Notification.php',
+            $this->compileStub(
+                ['{resourceName}','{notificationName}'],
+                [$this->resourceName,$notificationName],
+                __DIR__.'/stubs/Notification.stub')
+        );
+
+
+        \File::isDirectory($notificationsViewsPath) or \File::makeDirectory($notificationsViewsPath);
+
+        \File::put(
+            $notificationsViewsPath.DIRECTORY_SEPARATOR.$notificationName.'Mail.blade.php',
+            $this->compileStub(
+                ['{resourceName}','{notificationName}'],
+                [$this->resourceName,$notificationName],
+                __DIR__.'/stubs/Mail.stub')
+        );
+    }
 
 
 }
