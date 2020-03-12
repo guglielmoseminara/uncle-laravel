@@ -46,6 +46,9 @@ class ResourcesServiceProvider extends ServiceProvider
             if (\File::isDirectory($resourcesPath . $resource . $notificationsPath)) {
                 View::addLocation($resourcesPath . $resource . $notificationsViewPath);
             }
+
+            if(\File::exists($resourcesPath . $resource. DIRECTORY_SEPARATOR . $resource ."Routes.php"))
+                $this->loadRoutesFrom($resourcesPath.$resource. DIRECTORY_SEPARATOR . $resource ."Routes.php");
         }
 
         $this->loadMigrationsFrom($migrationFromResources);
