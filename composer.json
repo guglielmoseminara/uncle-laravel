@@ -35,7 +35,8 @@
         "providers": [
           "UncleProject\\UncleLaravel\\UncleLaravelServiceProvider",
           "UncleProject\\UncleLaravel\\Providers\\CommandsServiceProvider",
-          "UncleProject\\UncleLaravel\\Providers\\ResourcesServiceProvider"
+          "UncleProject\\UncleLaravel\\Providers\\ResourcesServiceProvider",
+          "UncleProject\\UncleLaravel\\Providers\\RouteServiceProvider"
         ]
       }
     },
