@@ -62,7 +62,7 @@ class GenerateCommand extends BaseResourceCommand
         $this->makeTestFile($names['singular']);
 
         $this->writeInFile(
-            config_path('app.php'),
+            config_path('uncle.php'),
             '//Add Resource - Uncle Comment (No Delete)',
             $this->compileStub(
                 ['{resourceName}'],

@@ -28,7 +28,7 @@ class ResourcesServiceProvider extends ServiceProvider
         $notificationsPath = DIRECTORY_SEPARATOR . 'Notifications';
         $notificationsViewPath = $notificationsPath . DIRECTORY_SEPARATOR . 'mails';
 
-        foreach(config('app.resources') as $resource => $classPath) {
+        foreach(config('uncle.resources') as $resource => $classPath) {
             $this->app->singleton($resource.'Resource', function ($app) use ($classPath) {
                 return new $classPath($app);
             });

@@ -20,7 +20,7 @@ trait HasUpload {
                 $value = null;
             }
             else if (strstr($value, 'http://') === FALSE && strstr($value, 'https://') === FALSE) {
-                $url = config('app.url').'/'.config('app.uploadable.url');
+                $url = config('app.url').'/'.config('uncle.uploadable.url');
                 $value = self::retrieveUrl($this, $url, $value);
             }
             return $value;
@@ -68,9 +68,9 @@ trait HasUpload {
 
     private static function getStoragePath() {
         if (env('APP_ENV') == 'testing') {
-            return Storage::disk('uploads')->getDriver()->getAdapter()->getPathPrefix().config('app.uploadable.testingPath');
+            return Storage::disk('uploads')->getDriver()->getAdapter()->getPathPrefix().config('uncle.uploadable.testingPath');
         } else {
-            return Storage::disk()->getDriver()->getAdapter()->getPathPrefix().config('app.uploadable.path');
+            return Storage::disk()->getDriver()->getAdapter()->getPathPrefix().config('uncle.uploadable.path');
         }
     }
 
