@@ -1,26 +1,18 @@
 <?php
 
-namespace UncleProject\UncleLaravel\Command;
+namespace UncleProject\UncleLaravel\Command\Relation;
 
 use UncleProject\UncleLaravel\Classes\BaseCommand;
 
-class RelationCommand extends BaseCommand
+class MorphManyRelationCommand extends BaseCommand
 {
-
-    private $parentName;
-    private $parentSingleName;
-    private $parentPath;
-    private $childName;
-    private $childSingleName;
-    private $childPath;
-
 
     /**
      * The name and signature of the console command.
      *
      * @var string
      */
-    protected $signature = 'relation:create {parent} {relation} {child} {pivot?}';
+    protected $signature = 'relation:MorphMany {resourceParent} {modelParent} {resourceChild} {modelChild}';
 
     /**
      * The console command description.

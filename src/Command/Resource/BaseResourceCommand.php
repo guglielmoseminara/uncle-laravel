@@ -6,13 +6,10 @@ use UncleProject\UncleLaravel\Classes\BaseCommand;
 
 class BaseResourceCommand extends BaseCommand
 {
-
     protected $resourceName;
     protected $resourcePath;
-
     protected $arraySearch = ['{resourceName}','{resourceSingleName}', '{resourceNameLower}', '{resourceSingleNameLower}'];
 
-    
     protected function makeResourceControllers($resourceSingleName){
 
         $controllersPath = $this->resourcePath.DIRECTORY_SEPARATOR.'Controllers';
@@ -164,6 +161,19 @@ class BaseResourceCommand extends BaseCommand
                 $this->arraySearch,
                 [$this->resourceName, $resourceSingleName, strtolower($this->resourceName), strtolower($resourceSingleName)],
                 __DIR__.'/stubs/Test.stub')
+        );
+
+    }
+
+    protected function addInConfig(){
+
+        $this->writeInFile(
+            config_path('uncle.php'),
+            '//Add Resource - Uncle Comment (No Delete)',
+            $this->compileStub(
+                ['{resourceName}'],
+                [$this->resourceName],
+                __DIR__.'/stubs/AddResourcePath.stub')
         );
 
     }

@@ -61,14 +61,7 @@ class GenerateCommand extends BaseResourceCommand
         $this->makeDatabaseFile($names['singular']);
         $this->makeTestFile($names['singular']);
 
-        $this->writeInFile(
-            config_path('uncle.php'),
-            '//Add Resource - Uncle Comment (No Delete)',
-            $this->compileStub(
-                ['{resourceName}'],
-                [$this->resourceName],
-                __DIR__.'/stubs/AddResourcePath.stub')
-        );
+        $this->addInConfig();
 
         $this->info("Resource {$this->resourceName} generate successfully");
     }

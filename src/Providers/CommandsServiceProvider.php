@@ -16,10 +16,14 @@ class CommandsServiceProvider extends ServiceProvider
     public function register()
     {
         $this->commands([
+            //Resource
             \UncleProject\UncleLaravel\Command\Resource\GenerateCommand::class,
             \UncleProject\UncleLaravel\Command\Resource\ModelCommand::class,
             \UncleProject\UncleLaravel\Command\Resource\PresenterCommand::class,
             \UncleProject\UncleLaravel\Command\Resource\NotificationCommand::class,
+
+            //Relation
+            \UncleProject\UncleLaravel\Command\Relation\OneToOneRelationCommand::class,
         ]);
     }
 
