@@ -3,7 +3,7 @@
 namespace UncleProject\UncleLaravel\Command\Relation;
 
 
-class OneToManyRelationCommand extends BaseRelationCommand
+class HasManyRelationCommand extends BaseRelationCommand
 {
 
     /**
@@ -11,7 +11,7 @@ class OneToManyRelationCommand extends BaseRelationCommand
      *
      * @var string
      */
-    protected $signature = 'relation:OneToMany {resourceParent} {modelParent} {resourceChild} {modelChild}';
+    protected $signature = 'relation:HasMany {resourceParent} {modelParent} {resourceChild} {modelChild}';
 
     /**
      * The console command description.

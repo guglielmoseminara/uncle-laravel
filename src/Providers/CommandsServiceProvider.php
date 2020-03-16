@@ -23,7 +23,7 @@ class CommandsServiceProvider extends ServiceProvider
             \UncleProject\UncleLaravel\Command\Resource\NotificationCommand::class,
 
             //Relation
-            \UncleProject\UncleLaravel\Command\Relation\OneToOneRelationCommand::class,
+            \UncleProject\UncleLaravel\Command\Relation\HasOneRelationCommand::class,
         ]);
     }
 
