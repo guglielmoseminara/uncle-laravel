@@ -6,6 +6,17 @@ use Illuminate\Console\Command;
 
 class BaseCommand extends Command
 {
+
+    protected $resourcesPath;
+
+
+    public function __construct()
+    {
+        $this->resourcesPath = app_path('Http'.DIRECTORY_SEPARATOR.'Resources');
+        parent::__construct();
+    }
+
+
     protected function resolveResourceName($input){
         $resourceName = ucfirst($input);
 
@@ -19,6 +30,13 @@ class BaseCommand extends Command
         }
 
         return $names;
+    }
+
+    protected function resolveModelName($input){
+
+        $names = $this->resolveResourceName($input);
+
+        return $names['singular'];
     }
 
     protected function compileStub($searchs,$replaces,$stubPath){

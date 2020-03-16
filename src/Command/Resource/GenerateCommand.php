@@ -2,7 +2,6 @@
 
 namespace UncleProject\UncleLaravel\Command\Resource;
 
-use UncleProject\UncleLaravel\Command\Resource\BaseResourceCommand;
 
 class GenerateCommand extends BaseResourceCommand
 {
@@ -39,7 +38,7 @@ class GenerateCommand extends BaseResourceCommand
         $names = $this->resolveResourceName($this->argument('resource'));
         $this->resourceName = $names['plural'];
 
-        $this->resourcePath = app_path('Http'.DIRECTORY_SEPARATOR.'Resources'). DIRECTORY_SEPARATOR. $this->resourceName;
+        $this->resourcePath = $this->resourcesPath. DIRECTORY_SEPARATOR. $this->resourceName;
 
         if (\File::exists($this->resourcePath)) {
             $this->error($this->resourceName  . ' resource already exists');

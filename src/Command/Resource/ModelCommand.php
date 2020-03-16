@@ -2,7 +2,6 @@
 
 namespace UncleProject\UncleLaravel\Command\Resource;
 
-use UncleProject\UncleLaravel\Command\Resource\BaseResourceCommand;
 
 class ModelCommand extends BaseResourceCommand
 {

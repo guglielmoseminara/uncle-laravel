@@ -2,7 +2,7 @@
 
 namespace UncleProject\UncleLaravel\Command\Resource;
 
-use UncleProject\UncleLaravel\Command\Resource\BaseResourceCommand;
+
 
 class NotificationCommand extends BaseResourceCommand
 {

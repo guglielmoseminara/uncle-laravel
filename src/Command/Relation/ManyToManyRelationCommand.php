@@ -2,9 +2,8 @@
 
 namespace UncleProject\UncleLaravel\Command\Relation;
 
-use UncleProject\UncleLaravel\Classes\BaseCommand;
 
-class ManyToManyRelationCommand extends BaseCommand
+class ManyToManyRelationCommand extends BaseRelationCommand
 {
 
     /**

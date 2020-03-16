@@ -2,9 +2,7 @@
 
 namespace UncleProject\UncleLaravel\Command\Relation;
 
-use UncleProject\UncleLaravel\Classes\BaseCommand;
-
-class OneToOneRelationCommand extends BaseCommand
+class OneToOneRelationCommand extends BaseRelationCommand
 {
 
 
@@ -35,30 +33,18 @@ class OneToOneRelationCommand extends BaseCommand
 
     public function handle()
     {
+        $this->resolveRelationActorName(
+            $this->argument('resourceParent'),
+            $this->argument('modelParent'),
+            $this->argument('resourceChild'),
+            $this->argument('modelChild'));
 
-        $names = $this->resolveResourceName($this->argument('parent'));
-        $this->parentSingleName = $names['singular'];
-        $this->parentName = $names['plural'];
-        $this->parentPath = app_path('Http'.DIRECTORY_SEPARATOR.'Resources'). DIRECTORY_SEPARATOR. $this->parentName;
+        $error = $this->checkActor();
 
-        $this->resolveResourceName($this->argument('relation'));
-
-        $names = $this->resolveResourceName($this->argument('child'));
-        $this->childSingleName = $names['singular'];
-        $this->childName = $names['plural'];
-        $this->childPath = app_path('Http'.DIRECTORY_SEPARATOR.'Resources'). DIRECTORY_SEPARATOR. $this->childName;
-
-        if (!\File::exists($this->parentPath) || !\File::exists($this->childPath)) {
-            $this->error('Resources not exists');
+        if($error['error']) {
+            $this->error($error['message']);
             return;
         }
-
-        if (!in_array($this->argument('relation'), ['HasOne', 'HasMany', 'belongsToMany']) || !\File::exists($this->childPath)) {
-            $this->error('Resources not exists');
-            return;
-        }
-        $this->resolveRelation($this->argument('relation'));
-
 
     }
 

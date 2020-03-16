@@ -2,9 +2,8 @@
 
 namespace UncleProject\UncleLaravel\Command\Relation;
 
-use UncleProject\UncleLaravel\Classes\BaseCommand;
 
-class MorphToManyRelationCommand extends BaseCommand
+class MorphToManyRelationCommand extends BaseRelationCommand
 {
 
 
