@@ -18,6 +18,8 @@ class BaseRelationCommand extends BaseCommand
     protected $resourceChildPath;
     protected $modelChildPath;
 
+    protected $relations = ['HasOne', 'BelongsTo'];
+
     public function __construct()
     {
         parent::__construct();
@@ -73,5 +75,25 @@ class BaseRelationCommand extends BaseCommand
 
         return ['error' => false];
 
+    }
+
+
+    protected function addRelation($relation, $modelPath = null, $resource = null, $model = null){
+
+        if(in_array($relation, $this->relations))
+        {
+            $modelPath = ($modelPath) ? $modelPath : $this->modelParentPath;
+            $resource = ($resource) ? $resource : $this->resourceChild;
+            $model = ($model) ? $model : $this->modelChild;
+
+            $this->writeInFile(
+                $modelPath,
+                '//Add Relations - Uncle Comment (No Delete)',
+                $this->compileStub(
+                    ['{resource}', '{model}', '{modelLcfirst}'],
+                    [$resource, $model, lcfirst($model)],
+                    __DIR__."/stubs/$relation.stub")
+            );
+        }
     }
 }

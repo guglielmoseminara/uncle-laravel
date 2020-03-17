@@ -46,13 +46,14 @@ class HasOneRelationCommand extends BaseRelationCommand
             return;
         }
 
+        $this->addRelation('HasOne');
 
+        if($this->hasOption('inverse')){
+            $this->addRelation('BelongsTo', $this->modelChildPath, $this->resourceParent, $this->modelParent);
+        }
 
     }
 
-    private function resolveRelation(){
-
-    }
 
 
 
