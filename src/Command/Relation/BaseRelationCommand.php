@@ -18,7 +18,7 @@ class BaseRelationCommand extends BaseCommand
     protected $resourceChildPath;
     protected $modelChildPath;
 
-    protected $relations = ['HasOne', 'BelongsTo'];
+    protected $relations = ['HasOne', 'HasMany', 'BelongsTo', 'BelongsToMany'];
 
     public function __construct()
     {
