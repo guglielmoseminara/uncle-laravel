@@ -86,12 +86,16 @@ class BaseRelationCommand extends BaseCommand
             $resource = ($resource) ? $resource : $this->resourceChild;
             $model = ($model) ? $model : $this->modelChild;
 
+            $functionName = lcfirst($model);
+            if(in_array($relation, ['HasMany','BelongsToMany']))
+                $functionName = str_plural($functionName);
+
             $this->writeInFile(
                 $modelPath,
                 '//Add Relations - Uncle Comment (No Delete)',
                 $this->compileStub(
-                    ['{resource}', '{model}', '{modelLcfirst}'],
-                    [$resource, $model, lcfirst($model)],
+                    ['{resource}', '{model}', '{functionName}'],
+                    [$resource, $model, $functionName],
                     __DIR__."/stubs/$relation.stub")
             );
         }
