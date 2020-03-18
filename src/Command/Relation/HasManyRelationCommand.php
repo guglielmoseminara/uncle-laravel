@@ -52,6 +52,7 @@ class HasManyRelationCommand extends BaseRelationCommand
             $this->addRelation('BelongsTo', $this->modelChildPath, $this->resourceParent, $this->modelParent);
         }
 
+        $this->info("Relation HasMany between $this->modelParent and $this->modelChild successful created");
     }
 
 }
