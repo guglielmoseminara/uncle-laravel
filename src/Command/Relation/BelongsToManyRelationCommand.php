@@ -46,9 +46,11 @@ class BelongsToManyRelationCommand extends BaseRelationCommand
             return;
         }
 
-    }
+        $this->addRelation('BelongsToMany');
 
-    private function resolveRelation(){
+        if($this->hasOption('inverse')){
+            $this->addRelation('BelongsToMany', $this->modelChildPath, $this->resourceParent, $this->modelParent);
+        }
 
     }
 

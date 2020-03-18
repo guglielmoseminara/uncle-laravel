@@ -24,6 +24,9 @@ class CommandsServiceProvider extends ServiceProvider
 
             //Relation
             \UncleProject\UncleLaravel\Command\Relation\HasOneRelationCommand::class,
+            \UncleProject\UncleLaravel\Command\Relation\HasManyRelationCommand::class,
+            \UncleProject\UncleLaravel\Command\Relation\BelongsToRelationCommand::class,
+            \UncleProject\UncleLaravel\Command\Relation\BelongsToManyRelationCommand::class,
         ]);
     }
 

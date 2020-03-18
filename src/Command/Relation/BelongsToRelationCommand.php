@@ -46,14 +46,8 @@ class BelongsToRelationCommand extends BaseRelationCommand
             return;
         }
 
-    }
-
-    private function resolveRelation(){
+        $this->addRelation('BelongsTo');
 
     }
-
-
-
-
 
 }
