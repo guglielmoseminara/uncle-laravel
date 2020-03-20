@@ -18,7 +18,9 @@ class BaseRelationCommand extends BaseCommand
     protected $resourceChildPath;
     protected $modelChildPath;
 
-    protected $relations = ['HasOne', 'HasMany', 'BelongsTo', 'BelongsToMany'];
+    protected $relations = ['HasOne', 'HasMany', 'BelongsTo', 'BelongsToMany', 'MorphOne', 'MorphMany', 'MorphTo', 'MorphToInverse'];
+
+    protected $morphKey;
 
     public function __construct()
     {
@@ -87,17 +89,27 @@ class BaseRelationCommand extends BaseCommand
             $model = ($model) ? $model : $this->modelChild;
 
             $functionName = lcfirst($model);
-            if(in_array($relation, ['HasMany','BelongsToMany']))
+            if(in_array($relation, ['HasMany','BelongsToMany','MorphMany']))
                 $functionName = str_plural($functionName);
+
+            if(in_array($relation, ['MorphOne','MorphMany', 'MorphToInverse'])){
+                $arraySearch = ['{resource}', '{model}', '{functionName}', '{morphKey}'];
+                $arrayReplace = [$resource, $model, $functionName, $this->morphKey];
+            }
+            else {
+                $arraySearch = ['{resource}', '{model}', '{functionName}'];
+                $arrayReplace = [$resource, $model, $functionName];
+            }
 
             $this->writeInFile(
                 $modelPath,
                 '//Add Relations - Uncle Comment (No Delete)',
                 $this->compileStub(
-                    ['{resource}', '{model}', '{functionName}'],
-                    [$resource, $model, $functionName],
+                    $arraySearch ,
+                    $arrayReplace,
                     __DIR__."/stubs/$relation.stub")
             );
+
         }
     }
 }

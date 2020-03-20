@@ -1,0 +1,6 @@
+
+    public function {functionName}() {
+        if ($this->{morphKey}_type == null)
+            $this->{morphKey}_type = App::make('{resource}Resource')->getModelClassPath('{model}');
+        return $this->morphTo('{functionName}', '{morphKey}_type', '{morphKey}_id');
+    }

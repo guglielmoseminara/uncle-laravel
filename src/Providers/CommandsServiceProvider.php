@@ -27,6 +27,8 @@ class CommandsServiceProvider extends ServiceProvider
             \UncleProject\UncleLaravel\Command\Relation\HasManyRelationCommand::class,
             \UncleProject\UncleLaravel\Command\Relation\BelongsToRelationCommand::class,
             \UncleProject\UncleLaravel\Command\Relation\BelongsToManyRelationCommand::class,
+            \UncleProject\UncleLaravel\Command\Relation\MorphOneRelationCommand::class,
+            \UncleProject\UncleLaravel\Command\Relation\MorphManyRelationCommand::class,
         ]);
     }
 

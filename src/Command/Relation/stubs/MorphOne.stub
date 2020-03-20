@@ -1,0 +1,4 @@
+
+    public function {functionName}() {
+        return $this->morphOne(App::make('{resource}Resource')->getModelClassPath('{model}'), '{morphKey}');
+    }

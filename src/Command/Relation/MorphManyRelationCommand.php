@@ -11,7 +11,7 @@ class MorphManyRelationCommand extends BaseRelationCommand
      *
      * @var string
      */
-    protected $signature = 'relation:MorphMany {resourceParent} {modelParent} {resourceChild} {modelChild}';
+    protected $signature = 'relation:MorphMany {resourceParent} {modelParent} {resourceMorph} {modelMorph} {morphKey}';
 
     /**
      * The console command description.
@@ -34,38 +34,30 @@ class MorphManyRelationCommand extends BaseRelationCommand
     public function handle()
     {
 
-        $names = $this->resolveResourceName($this->argument('parent'));
-        $this->parentSingleName = $names['singular'];
-        $this->parentName = $names['plural'];
-        $this->parentPath = app_path('Http'.DIRECTORY_SEPARATOR.'Resources'). DIRECTORY_SEPARATOR. $this->parentName;
+        $this->resolveRelationActorName(
+            $this->argument('resourceParent'),
+            $this->argument('modelParent'),
+            $this->argument('resourceMorph'),
+            $this->argument('modelMorph'));
 
-        $this->resolveResourceName($this->argument('relation'));
+        $error = $this->checkActor();
 
-        $names = $this->resolveResourceName($this->argument('child'));
-        $this->childSingleName = $names['singular'];
-        $this->childName = $names['plural'];
-        $this->childPath = app_path('Http'.DIRECTORY_SEPARATOR.'Resources'). DIRECTORY_SEPARATOR. $this->childName;
-
-        if (!\File::exists($this->parentPath) || !\File::exists($this->childPath)) {
-            $this->error('Resources not exists');
+        if($error['error']) {
+            $this->error($error['message']);
             return;
         }
 
-        if (!in_array($this->argument('relation'), ['HasOne', 'HasMany', 'belongsToMany']) || !\File::exists($this->childPath)) {
-            $this->error('Resources not exists');
-            return;
+        $this->morphKey = $this->argument('morphKey');
+
+        $this->addRelation('MorphMany');
+
+        if($this->hasOption('inverse')){
+            $this->addRelation('MorphToInverse', $this->modelChildPath, $this->resourceParent, $this->modelParent);
         }
-        $this->resolveRelation($this->argument('relation'));
+
+        $this->info("Relation MorphOne between $this->modelParent and $this->modelChild successful created");
 
 
     }
-
-    private function resolveRelation(){
-
-    }
-
-
-
-
 
 }
