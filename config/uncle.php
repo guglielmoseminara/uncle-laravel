@@ -20,5 +20,20 @@ return [
         'url' => 'api/{resource}/{id}/images/{imageName}',
         'path' => 'uploads/{resource}/{id}/{imageName}',
         'testingPath' => '{resource}/{id}/{imageName}'
+    ],
+
+    /*
+    |--------------------------------------------------------------------------
+    | Project Commands
+    |--------------------------------------------------------------------------
+    |
+    |
+    |
+    */
+
+    'project_commands' => [
+
+
+
     ]
 ];

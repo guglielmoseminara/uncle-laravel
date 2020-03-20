@@ -49,10 +49,20 @@ class MorphOneRelationCommand extends BaseRelationCommand
 
         $this->morphKey = $this->argument('morphKey');
 
-        $this->addRelation('MorphOne');
+        $error = $this->addRelation('MorphOne');
+
+        if($error['error']) {
+            $this->error($error['message']);
+            return;
+        }
 
         if($this->hasOption('inverse')){
-            $this->addRelation('MorphToInverse', $this->modelChildPath, $this->resourceParent, $this->modelParent);
+            $error = $this->addRelation('MorphToInverse', $this->modelChildPath, $this->resourceParent, $this->modelParent);
+
+            if($error['error']) {
+                $this->error($error['message']);
+                return;
+            }
         }
 
         $this->info("Relation MorphOne between $this->modelParent and $this->modelChild successful created");

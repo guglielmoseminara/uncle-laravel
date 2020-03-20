@@ -43,6 +43,10 @@ class BaseCommand extends Command
         return str_replace($searchs,$replaces,\File::get($stubPath));
     }
 
+    protected function fileExistFunction($filePath, $function){
+        return (strpos(\File::get($filePath), "public function $function()") !== false);
+    }
+
     protected function writeInFile($filename, $search, $insert){
         \File::put($filename, $this->compileStub($search, $search. "\n". $insert, $filename));
     }

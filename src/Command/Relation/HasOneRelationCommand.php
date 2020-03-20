@@ -46,10 +46,20 @@ class HasOneRelationCommand extends BaseRelationCommand
             return;
         }
 
-        $this->addRelation('HasOne');
+        $error = $this->addRelation('HasOne');
+
+        if($error['error']) {
+            $this->error($error['message']);
+            return;
+        }
 
         if($this->hasOption('inverse')){
-            $this->addRelation('BelongsTo', $this->modelChildPath, $this->resourceParent, $this->modelParent);
+            $error = $this->addRelation('BelongsTo', $this->modelChildPath, $this->resourceParent, $this->modelParent);
+
+            if($error['error']) {
+                $this->error($error['message']);
+                return;
+            }
         }
 
         $this->info("Relation HasOne between $this->modelParent and $this->modelChild successful created");

@@ -46,10 +46,20 @@ class HasManyRelationCommand extends BaseRelationCommand
             return;
         }
 
-        $this->addRelation('HasMany');
+        $error = $this->addRelation('HasMany');
+
+        if($error['error']) {
+            $this->error($error['message']);
+            return;
+        }
 
         if($this->hasOption('inverse')){
-            $this->addRelation('BelongsTo', $this->modelChildPath, $this->resourceParent, $this->modelParent);
+            $error = $this->addRelation('BelongsTo', $this->modelChildPath, $this->resourceParent, $this->modelParent);
+
+            if($error['error']) {
+                $this->error($error['message']);
+                return;
+            }
         }
 
         $this->info("Relation HasMany between $this->modelParent and $this->modelChild successful created");

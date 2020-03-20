@@ -46,7 +46,12 @@ class BelongsToRelationCommand extends BaseRelationCommand
             return;
         }
 
-        $this->addRelation('BelongsTo');
+        $error = $this->addRelation('BelongsTo');
+
+        if($error['error']) {
+            $this->error($error['message']);
+            return;
+        }
 
         $this->info("Relation BelongsTo between $this->modelParent and $this->modelChild successful created");
     }

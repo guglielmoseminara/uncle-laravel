@@ -82,8 +82,7 @@ class BaseRelationCommand extends BaseCommand
 
     protected function addRelation($relation, $modelPath = null, $resource = null, $model = null){
 
-        if(in_array($relation, $this->relations))
-        {
+        if(in_array($relation, $this->relations)) {
             $modelPath = ($modelPath) ? $modelPath : $this->modelParentPath;
             $resource = ($resource) ? $resource : $this->resourceChild;
             $model = ($model) ? $model : $this->modelChild;
@@ -92,24 +91,36 @@ class BaseRelationCommand extends BaseCommand
             if(in_array($relation, ['HasMany','BelongsToMany','MorphMany']))
                 $functionName = str_plural($functionName);
 
-            if(in_array($relation, ['MorphOne','MorphMany', 'MorphToInverse'])){
-                $arraySearch = ['{resource}', '{model}', '{functionName}', '{morphKey}'];
-                $arrayReplace = [$resource, $model, $functionName, $this->morphKey];
-            }
-            else {
-                $arraySearch = ['{resource}', '{model}', '{functionName}'];
-                $arrayReplace = [$resource, $model, $functionName];
-            }
+            if(!$this->fileExistFunction($modelPath, $functionName))
+            {
+                if(in_array($relation, ['MorphOne','MorphMany', 'MorphToInverse'])){
+                    $arraySearch = ['{resource}', '{model}', '{functionName}', '{morphKey}'];
+                    $arrayReplace = [$resource, $model, $functionName, $this->morphKey];
+                }
+                else {
+                    $arraySearch = ['{resource}', '{model}', '{functionName}'];
+                    $arrayReplace = [$resource, $model, $functionName];
+                }
 
-            $this->writeInFile(
-                $modelPath,
-                '//Add Relations - Uncle Comment (No Delete)',
-                $this->compileStub(
-                    $arraySearch ,
-                    $arrayReplace,
-                    __DIR__."/stubs/$relation.stub")
-            );
+                $this->writeInFile(
+                    $modelPath,
+                    '//Add Relations - Uncle Comment (No Delete)',
+                    $this->compileStub(
+                        $arraySearch ,
+                        $arrayReplace,
+                        __DIR__."/stubs/$relation.stub")
+                );
 
+                return ['error' => false];
+            }
+            else return [
+                'error'   => true,
+                'message' => "Function $functionName already exist in $modelPath"
+            ];
         }
+        else return [
+            'error'   => true,
+            'message' => "$relation is not an available Relation"
+        ];
     }
 }

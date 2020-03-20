@@ -46,10 +46,20 @@ class BelongsToManyRelationCommand extends BaseRelationCommand
             return;
         }
 
-        $this->addRelation('BelongsToMany');
+        $error = $this->addRelation('BelongsToMany');
+
+        if($error['error']) {
+            $this->error($error['message']);
+            return;
+        }
 
         if($this->hasOption('inverse')){
-            $this->addRelation('BelongsToMany', $this->modelChildPath, $this->resourceParent, $this->modelParent);
+            $error = $this->addRelation('BelongsToMany', $this->modelChildPath, $this->resourceParent, $this->modelParent);
+
+            if($error['error']) {
+                $this->error($error['message']);
+                return;
+            }
         }
 
         $this->info("Relation BelongsToMany between $this->modelParent and $this->modelChild successful created");
