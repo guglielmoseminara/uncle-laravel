@@ -33,8 +33,7 @@ class ModelCommand extends BaseResourceCommand
 
     public function handle()
     {
-        $names = $this->resolveResourceName($this->argument('resource'));
-        $this->resourceName = $names['plural'];
+        $this->resourceName = $this->argument('resource');
 
         $this->resourcePath = app_path('Http'.DIRECTORY_SEPARATOR.'Resources'). DIRECTORY_SEPARATOR. $this->resourceName;
 
