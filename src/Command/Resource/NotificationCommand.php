@@ -52,9 +52,7 @@ class NotificationCommand extends BaseResourceCommand
     protected function makeResourceNotifications($notificationName){
 
         $notificationsPath = $this->resourcePath.DIRECTORY_SEPARATOR.'Notifications';
-        $notificationsViewsPath = $this->resourcePath.DIRECTORY_SEPARATOR.'Notifications'.DIRECTORY_SEPARATOR.'mails';
-
-        \File::isDirectory($notificationsPath) or\File::makeDirectory($notificationsViewsPath);
+        \File::isDirectory($notificationsPath) or\File::makeDirectory($notificationsPath);
 
         \File::put(
             $notificationsPath.DIRECTORY_SEPARATOR.$notificationName.'Notification.php',
@@ -64,7 +62,7 @@ class NotificationCommand extends BaseResourceCommand
                 __DIR__.'/stubs/Notification.stub')
         );
 
-
+        $notificationsViewsPath = $this->resourcePath.DIRECTORY_SEPARATOR.'Notifications'.DIRECTORY_SEPARATOR.'mails';
         \File::isDirectory($notificationsViewsPath) or \File::makeDirectory($notificationsViewsPath);
 
         \File::put(
