@@ -13,7 +13,7 @@ class GenerateCommand extends BaseResourceCommand
      *
      * @var string
      */
-    protected $signature = 'resource:generate {resource} ';
+    protected $signature = 'resource:generate {resource} {--in=} ';
 
     /**
      * The console command description.
@@ -36,19 +36,36 @@ class GenerateCommand extends BaseResourceCommand
     public function handle()
     {
         $names = $this->resolveResourceName($this->argument('resource'));
-        $this->resourceName = $names['plural'];
 
-        $this->resourcePath = $this->resourcesPath. DIRECTORY_SEPARATOR. $this->resourceName;
+        if ($this->option('in')) {
+            $this->resourceName = $this->option('in');
+            $this->resourcePath = $this->resourcesPath. DIRECTORY_SEPARATOR. $this->resourceName;
 
-        if (\File::exists($this->resourcePath)) {
-            $this->error($this->resourceName  . ' resource already exists');
-            return;
+            if (!\File::exists($this->resourcePath)) {
+                $this->error($this->option('in') . ' resource not exists! ');
+                return;
+            }
+        }
+        else {
+
+            $this->resourceName = $names['plural'];
+            $this->resourcePath = $this->resourcesPath. DIRECTORY_SEPARATOR. $this->resourceName;
+
+            if (\File::exists($this->resourcePath)) {
+                $this->error($this->resourceName  . ' resource already exists');
+                return;
+            }
         }
 
-        \File::makeDirectory($this->resourcePath);
 
-        $this->makeResourceFile();
-        $this->makeResourceRoute($names['singular']);
+        if(!$this->option('in')){
+            $this->addInConfig();
+
+            \File::makeDirectory($this->resourcePath);
+
+            $this->makeResourceFile();
+            $this->makeResourceRoute($names['singular']);
+        }
 
         $this->makeResourceControllers($names['singular']);
         $this->makeResourceFakers($names['singular']);
@@ -60,8 +77,7 @@ class GenerateCommand extends BaseResourceCommand
         $this->makeDatabaseFile($names['singular']);
         $this->makeTestFile($names['singular']);
 
-        $this->addInConfig();
-
-        $this->info("Resource {$this->resourceName} generate successfully");
+        if($this->option('in')) $this->info("Classes {$names['singular']} generate successfully in Resource {$this->resourceName}");
+        else $this->info("Resource {$this->resourceName} generate successfully");
     }
 }
