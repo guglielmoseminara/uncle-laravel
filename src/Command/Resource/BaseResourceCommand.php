@@ -143,7 +143,7 @@ class BaseResourceCommand extends BaseCommand
         $seedersPath = $databasePath.DIRECTORY_SEPARATOR.'seeders';
         \File::isDirectory($seedersPath) or \File::makeDirectory($seedersPath);
 
-        \File::put($seedersPath.DIRECTORY_SEPARATOR.$this->resourceName.'Seeder.php',
+        \File::put($seedersPath.DIRECTORY_SEPARATOR.$this->resourceName.'TableSeeder.php',
             $this->compileStub(
                 $this->arraySearch,
                 [$this->resourceName, $resourceSingleName, strtolower($this->resourceName), strtolower($resourceSingleName)],
