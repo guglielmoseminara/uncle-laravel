@@ -6,8 +6,6 @@ namespace UncleProject\UncleLaravel\Command\Resource;
 class GenerateCommand extends BaseResourceCommand
 {
 
-
-
     /**
      * The name and signature of the console command.
      *

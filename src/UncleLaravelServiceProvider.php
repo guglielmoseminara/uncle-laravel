@@ -6,6 +6,7 @@ use Illuminate\Support\Facades\Blade;
 use Illuminate\Support\Facades\Schema;
 use Illuminate\Support\Facades\Validator;
 use UncleProject\UncleLaravel\Helpers\Utils;
+use UncleProject\UncleLaravel\Helpers\XMLResource;
 
 use Faker\Factory as FakerFactory;
 use Faker\Generator as FakerGenerator;
@@ -88,6 +89,11 @@ class UncleLaravelServiceProvider extends ServiceProvider
 
         $this->app->singleton('Utils', function ($app) {
             return new Utils($app);
+        });
+
+        $this->app->singleton('XMLResource', function ($app, $parameters) {
+            $xml = new XMLResource($app, $parameters['resource']);
+            return $xml;
         });
     }
 
