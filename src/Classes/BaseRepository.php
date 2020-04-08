@@ -60,4 +60,10 @@ class BaseRepository extends EloquentBaseRepository {
         return end($paths);
     }
 
+
+    public function withTrashed() {
+        $this->model = $this->model->withTrashed();
+        return $this;
+    }
+
 }
