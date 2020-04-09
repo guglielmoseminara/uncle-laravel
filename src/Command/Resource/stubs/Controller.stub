@@ -34,7 +34,7 @@ class {resourceSingleName}Controller extends ApiResourceDefaultController {
 
     /**
      * Search {resourceSingleName}
-     * 
+     *
      */
     public function index(Request $request) {
         return parent::index($request);
