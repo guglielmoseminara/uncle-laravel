@@ -31,4 +31,52 @@ class {resourceSingleName}Controller extends ApiResourceDefaultController {
 
     protected $resourceName = '{resourceName}';
 
+
+    /**
+     * Search {resourceSingleName}
+     * 
+     */
+    public function index(Request $request) {
+        return parent::index($request);
+    }
+
+    /**
+     * Insert {resourceSingleName}
+     *
+     */
+    public function store(Request $request) {
+        return parent::store($request);
+    }
+
+    /**
+     * Destroy many {resourceSingleName}
+     *
+     */
+    public function destroyMany(Request $request) {
+        return parent::destroyMany($request);
+    }
+
+    /**
+     * Show {resourceSingleName}
+     *
+     */
+    public function show(Request $request, $key) {
+        return parent::update($request, $key);
+    }
+
+    /**
+     * Update {resourceSingleName}
+     *
+     */
+    public function update(Request $request, $key) {
+        return parent::update($request, $key);
+    }
+
+    /**
+     * Destroy {resourceSingleName}
+     *
+     */
+    public function destroy(Request $request, $key) {
+        return parent::destroy($request, $key);
+    }
 }
