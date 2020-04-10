@@ -247,19 +247,19 @@ abstract class BaseTestCase extends TestCase
 
     // default tests
 
-    public function defaultTestIndex($userToken,$url,$resource, $model, $presenter){
-        $response = $this->requestWithTest('GET',$url,[],['Authorization' => 'Bearer '.$userToken], 200, ['results']);
+    public function defaultTestIndex($userToken,$url,$resource, $model, $presenter, $code = 200){
+        $response = $this->requestWithTest('GET',$url,[],['Authorization' => 'Bearer '.$userToken], $code, ['results']);
         $modelKeys = $this->getModelKeys($resource, $model, $presenter);
         $this->assertResponseList($response, $modelKeys);
 
         return $response;
     }
 
-    public function defaultTestStore($userToken,$url,$resource, $faker, $fakerFunction = 'getStore'){
+    public function defaultTestStore($userToken,$url,$resource, $faker, $code = 200, $fakerFunction = 'getStore'){
         $fakerData = App::make($resource.'Resource')->getFaker($faker)->$fakerFunction();
         $response = $this->requestWithTest('POST', $url, $fakerData,
             ['Authorization' => 'Bearer ' . $userToken],
-            200,
+            $code,
             ['results']
         );
         $this->assertIsUpdated($response, $fakerData);
@@ -267,11 +267,11 @@ abstract class BaseTestCase extends TestCase
         return [ 'response' => $response, 'request' => $fakerData];
     }
 
-    public function defaultTestUpdate($userToken,$url,$resource, $model, $faker, $fakerFunction = 'getUpdate'){
+    public function defaultTestUpdate($userToken,$url,$resource, $model, $faker, $code = 200, $fakerFunction = 'getUpdate'){
         $fakerData = App::make($resource.'Resource')->getFaker($faker)->$fakerFunction();
         $response = $this->requestWithTest('PUT', $url.'/'.$fakerData['id'], $fakerData['data'],
             ['Authorization' => 'Bearer ' . $userToken],
-            200,
+            $code,
             ['results']
         );
         $this->assertIsUpdated($response, $fakerData);
@@ -279,7 +279,7 @@ abstract class BaseTestCase extends TestCase
         return [ 'response' => $response, 'request' => $fakerData['data']];
     }
 
-    public function defaultTestDelete($userToken, $url, $resource, $faker, $fakerFunction = 'getStore'){
+    public function defaultTestDelete($userToken, $url, $resource, $faker, $code = 200, $fakerFunction = 'getStore'){
 
         $fakerData = App::make($resource.'Resource')->getFaker($faker)->$fakerFunction();
         $response = $this->requestWithTest('POST',$url,
@@ -291,7 +291,7 @@ abstract class BaseTestCase extends TestCase
         $result = $this->getResponseData($response);
         $response = $this->requestWithTest('DELETE', $url.'/'.$result->id,
             [],
-            ['Authorization' => 'Bearer '.$userToken], 200,
+            ['Authorization' => 'Bearer '.$userToken], $code,
             ['results']
         );
 
