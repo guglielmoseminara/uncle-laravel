@@ -7,12 +7,15 @@ use App;
 
 class {resourceSingleName}Faker {
 
-    public static function get() {
-        $faker = Faker::create();
+    public static function getStore() {
+         $faker = Faker::create();
 
-        return [
-
-        ];
+         return factory(App\User::class)->make();
     }
 
+    public static function getUpdate() {
+        $faker = Faker::create();
+
+        return [];
+    }
 }
