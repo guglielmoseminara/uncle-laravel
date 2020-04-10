@@ -14,7 +14,7 @@ class {resourceSingleName}Test extends BaseTestCase {
     public function test{resourceSingleName}Store()
     {
         $userToken = $this->loginUser(['email' => 'user@mail.com', 'password' => 'password'], 'token');
-        $data = $this->defaultTestStore($userToken, '/api/{resourceNameLower}', '{resourceName}Resource', '{resourceSingleName}');
+        $data = $this->defaultTestStore($userToken, '/api/{resourceNameLower}', '{resourceName}', '{resourceSingleName}');
     }
 
     public function test{resourceSingleName}Update() {
