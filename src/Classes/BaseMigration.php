@@ -27,7 +27,10 @@ class BaseMigration extends Migration
                 foreach ($schema->xpath('column') as $column){
                     $type = $column->attributes()['type']->__toString();
 
-                    if(in_array($type,['char','string']) && isset($column->attributes()['length'])){
+                    if($type == 'foreign'){
+                        $field = $table->$type($column->attributes()['name'])->references($column->attributes()['references'])->on($column->attributes()['on']);
+                    }
+                    elseif(in_array($type,['char','string']) && isset($column->attributes()['length'])){
                         $field = $table->$type($column->attributes()['name'], $column->attributes()['length']);
                     }
                     elseif(in_array($type,['double','decimal','float','unsignedDecimal']) ){
