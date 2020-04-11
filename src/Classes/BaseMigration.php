@@ -15,6 +15,8 @@ class BaseMigration extends Migration
      *
      * @return void
      */
+
+
     public function up()
     {
         $xml = App::make('XMLResource',['resource' => $this->resourceName]);
@@ -24,7 +26,26 @@ class BaseMigration extends Migration
             Schema::create($schema->attributes()['name'], function (Blueprint $table) use($schema) {
                 foreach ($schema->xpath('column') as $column){
                     $type = $column->attributes()['type']->__toString();
-                    $table->$type($column->attributes()['name']);
+
+                    if(in_array($type,['char','string']) && isset($column->attributes()['length'])){
+                        $field = $table->$type($column->attributes()['name'], $column->attributes()['length']);
+                    }
+                    elseif(in_array($type,['double','decimal','float','unsignedDecimal']) ){
+                        $field  = $table->$type($column->attributes()['name'], $column->attributes()['digits'],$column->attributes()['decimal']);
+                    }
+                    elseif(in_array($type,['enum','set']) ){
+                        $field = $table->$type($column->attributes()['name'], explode(',',$column->attributes()['options']->__toString()));
+                    }
+                    else $field = $table->$type($column->attributes()['name']);
+
+                    if(isset($column->attributes()['modifiers'])){
+                        $modifiers = explode(',',$column->attributes()['modifiers']->__toString());
+                        foreach ($modifiers as $modifier){
+                            [$key, $value] = explode(':',$modifier);
+                            if(isset($value)) $field->$key($value);
+                            else $field->$modifier();
+                        }
+                    }
                 }
             });
         }
@@ -38,6 +59,12 @@ class BaseMigration extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('tests');
+        $xml = App::make('XMLResource',['resource' => $this->resourceName]);
+        $migrations = $xml->getDatabaseSchemas();
+
+        foreach($migrations as $schema){
+            Schema::dropIfExists($schema->attributes()['name']);
+        }
+
     }
 }
