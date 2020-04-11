@@ -12,7 +12,13 @@ class BaseRepository extends EloquentBaseRepository {
 
         $xml = App::make('XMLResource',['resource' => $this->resourceName]);
         if($xml->hasXML()){
+            $searchables = $xml->getRepositorySearchable('Test');
 
+            foreach ($searchables as $searchable){
+                if(isset($searchable->attributes()['option']))
+                    $this->fieldSearchable[$searchable->attributes()['name']->__toString()] = $searchable->attributes()['option']->__toString();
+                else array_push($this->fieldSearchable,$searchable->attributes()['name']->__toString());
+            }
         }
     }
 
