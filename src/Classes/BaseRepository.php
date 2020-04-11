@@ -9,6 +9,11 @@ class BaseRepository extends EloquentBaseRepository {
 
     public function boot() {
         $this->pushCriteria(app('\UncleProject\UncleLaravel\Classes\BaseRequestCriteria'));
+
+        $xml = App::make('XMLResource',['resource' => $this->resourceName]);
+        if($xml->hasXML()){
+
+        }
     }
 
     public function resource() {

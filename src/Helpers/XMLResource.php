@@ -12,12 +12,22 @@ class XMLResource {
     }
 
     public function load($resource){
-        $this->xml = simplexml_load_file(app_path('Http'.DIRECTORY_SEPARATOR.'Resources'.DIRECTORY_SEPARATOR.$resource.DIRECTORY_SEPARATOR.$resource).'.xml');
+        $filepath = app_path('Http'.DIRECTORY_SEPARATOR.'Resources'.DIRECTORY_SEPARATOR.$resource.DIRECTORY_SEPARATOR.$resource).'.xml';
+        if(\File::exists($filepath))
+            $this->xml = simplexml_load_file($filepath);
     }
 
+    public function hasXML(){
+        return isset($this->xml);
+    }
 
     public function getDatabaseSchemas(){
         $migrations = $this->xml->xpath('migrations/schema');
+        return $this->convertSingleToArray($migrations);
+    }
+
+    public function getRepositorySearchable($name){
+        $migrations = $this->xml->xpath("repositories/repository[@name='{$name}']/searchables/field");
         return $this->convertSingleToArray($migrations);
     }
 
