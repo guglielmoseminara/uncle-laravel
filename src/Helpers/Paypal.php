@@ -89,18 +89,24 @@ class Paypal {
 
     public function isTransactionApproved($paypal_payment_id, $paypal_payer_id){
 
-        $payment = Payment::get($paypal_payment_id, $this->api_context);
-        $execution = new PaymentExecution();
-        $execution->setPayerId($paypal_payer_id);
+        if(isset($paypal_payment_id) && isset($paypal_payer_id)){
+            $payment = Payment::get($paypal_payment_id, $this->api_context);
+            $execution = new PaymentExecution();
+            $execution->setPayerId($paypal_payer_id);
 
-        /**Execute the payment **/
-        $result = $payment->execute($execution, $this->api_context);
+            /**Execute the payment **/
+            $result = $payment->execute($execution, $this->api_context);
 
-        if ($result->getState() == 'approved') {
-            return true;
+            if ($result->getState() == 'approved') {
+                return true;
+            }
+            else {
+                return false;
+            }
         }
         else {
             return false;
         }
+
     }
 }
