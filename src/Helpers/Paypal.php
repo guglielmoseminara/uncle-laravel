@@ -2,6 +2,7 @@
 
 namespace UncleProject\UncleLaravel\Helpers;
 
+use Mockery\Exception;
 use PayPal\Api\Amount;
 use PayPal\Api\Details;
 use PayPal\Api\Item;
@@ -15,6 +16,7 @@ use PayPal\Auth\OAuthTokenCredential;
 use PayPal\Rest\ApiContext;
 use PayPal\Exception\PayPalConnectionException;
 use Symfony\Component\HttpKernel\Exception\AccessDeniedHttpException;
+
 
 class Paypal {
 
@@ -90,19 +92,31 @@ class Paypal {
     public function isTransactionApproved($paypal_payment_id, $paypal_payer_id){
 
         if(isset($paypal_payment_id) && isset($paypal_payer_id)){
-            $payment = Payment::get($paypal_payment_id, $this->api_context);
-            $execution = new PaymentExecution();
-            $execution->setPayerId($paypal_payer_id);
+            try {
 
-            /**Execute the payment **/
-            $result = $payment->execute($execution, $this->api_context);
+                $payment = Payment::get($paypal_payment_id, $this->api_context);
+                $execution = new PaymentExecution();
+                $execution->setPayerId($paypal_payer_id);
 
-            if ($result->getState() == 'approved') {
-                return true;
+                /**Execute the payment **/
+                $result = $payment->execute($execution, $this->api_context);
+
+                dd($result);
+
+                if ($result->getState() == 'approved') {
+                    return true;
+                }
+                else {
+                    return false;
+                }
             }
-            else {
-                return false;
+            catch(PayPalConnectionException $ex){
+                dd($ex);
+            } catch (Exception $ex) {
+                dd($ex);
             }
+
+
         }
         else {
             return false;
