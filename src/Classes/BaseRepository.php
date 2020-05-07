@@ -11,13 +11,15 @@ class BaseRepository extends EloquentBaseRepository {
         $this->pushCriteria(app('\UncleProject\UncleLaravel\Classes\BaseRequestCriteria'));
 
         $xml = App::make('XMLResource',['resource' => $this->resourceName]);
-        if($xml->hasXML()){
+        if($xml->hasXML()) {
             $searchables = $xml->getRepositorySearchable('Test');
 
-            foreach ($searchables as $searchable){
-                if(isset($searchable->attributes()['option']))
-                    $this->fieldSearchable[$searchable->attributes()['name']->__toString()] = $searchable->attributes()['option']->__toString();
-                else array_push($this->fieldSearchable,$searchable->attributes()['name']->__toString());
+            if (!empty($searchables)) {
+                foreach ($searchables as $searchable) {
+                    if (isset($searchable->attributes()['option']))
+                        $this->fieldSearchable[$searchable->attributes()['name']->__toString()] = $searchable->attributes()['option']->__toString();
+                    else array_push($this->fieldSearchable, $searchable->attributes()['name']->__toString());
+                }
             }
         }
     }

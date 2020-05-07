@@ -27,7 +27,7 @@ class XMLResource {
     }
 
     public function getRepositorySearchable($name){
-        $migrations = $this->xml->xpath("repositories/repository[@name='{$name}']/searchables/field");
+        $migrations = $this->xml->xpath("//repository[@name='{$name}']/searchables/field");
         return $this->convertSingleToArray($migrations);
     }
 
