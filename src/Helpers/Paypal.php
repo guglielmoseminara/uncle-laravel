@@ -101,8 +101,6 @@ class Paypal {
                 /**Execute the payment **/
                 $result = $payment->execute($execution, $this->api_context);
 
-                dd($result);
-
                 if ($result->getState() == 'approved') {
                     return true;
                 }
@@ -110,13 +108,11 @@ class Paypal {
                     return false;
                 }
             }
-            catch(PayPalConnectionException $ex){
-                dd($ex);
+            catch(PayPalConnectionException $ex) {
+                throw new AccessDeniedHttpException("Paypal Error: ".json_decode($ex->getData())->details[0]->issue);
             } catch (Exception $ex) {
-                dd($ex);
+                throw new AccessDeniedHttpException($ex);
             }
-
-
         }
         else {
             return false;
