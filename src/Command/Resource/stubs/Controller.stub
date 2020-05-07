@@ -61,7 +61,7 @@ class {resourceSingleName}Controller extends ApiResourceDefaultController {
      *
      */
     public function show(Request $request, $key) {
-        return parent::update($request, $key);
+        return parent::show($request, $key);
     }
 
     /**
