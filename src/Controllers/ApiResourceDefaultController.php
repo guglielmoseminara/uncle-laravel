@@ -510,8 +510,10 @@ class ApiResourceDefaultController extends ApiResourceController{
     {
         $related = $relation->getRelated();
 
+
         if (array_key_exists('id', $fillable)) {
             $record = $relation->associate($related->find($fillable['id']));
+            $model->save();
             return $record;
         }
 
