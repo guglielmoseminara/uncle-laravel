@@ -22,12 +22,14 @@ class MorphSearchCriteria implements CriteriaInterface {
 
     public function apply($model, RepositoryInterface $repository)
     {
-        $search = BaseRequestParser::parserSearchData($this->search);
-        $key = array_keys($search)[0];
-        if(key_exists($key, $this->morphMap)){
-            $model = $model->where($this->morphIdKey, $search[$key])
-                ->where($this->morphTypeKey, App::make($this->morphMap[$key]['resource'])->getModelClassPath($this->morphMap[$key]['model']));
-            return $model;
+        if($this->search) {
+            $search = BaseRequestParser::parserSearchData($this->search);
+            $key = array_keys($search)[0];
+            if(key_exists($key, $this->morphMap)){
+                $model = $model->where($this->morphIdKey, $search[$key])
+                    ->where($this->morphTypeKey, App::make($this->morphMap[$key]['resource'])->getModelClassPath($this->morphMap[$key]['model']));
+
+            }
         }
 
         return $model;
