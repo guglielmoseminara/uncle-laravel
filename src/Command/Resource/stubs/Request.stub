@@ -12,7 +12,14 @@ class {resourceSingleName}Request extends BaseActionBasedFormRequest {
     }
 
     public static function index() {
-        return [];
+        return [
+            'search'          => 'array',
+            'searchJoin'      => 'in:and,or',
+            'perPage'         => 'numeric',
+            'page'            => 'numeric',
+            'orderBy'         => 'in:',
+            'sortedBy'        => 'in:'
+        ];
     }
 
     public static function store() {

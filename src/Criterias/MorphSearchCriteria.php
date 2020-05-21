@@ -10,11 +10,11 @@ use Auth;
 
 class MorphSearchCriteria implements CriteriaInterface {
 
+    private $search;
+
     protected $morphIdKey;
     protected $morphTypeKey;
     protected $morphMap;
-    private $search;
-
 
     public function __construct($searchField) {
         $this->search = $searchField;
@@ -28,7 +28,6 @@ class MorphSearchCriteria implements CriteriaInterface {
             if(key_exists($key, $this->morphMap)){
                 $model = $model->where($this->morphIdKey, $search[$key])
                     ->where($this->morphTypeKey, App::make($this->morphMap[$key]['resource'])->getModelClassPath($this->morphMap[$key]['model']));
-
             }
         }
 
