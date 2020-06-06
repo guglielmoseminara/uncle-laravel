@@ -4,6 +4,8 @@ namespace UncleProject\UncleLaravel\Providers;
 
 use Illuminate\Support\ServiceProvider;
 use Illuminate\Database\Eloquent\Factory;
+use UncleProject\UncleLaravel\Helpers\Resources;
+use UncleProject\UncleLaravel\Classes\BaseResource;
 use View;
 use App;
 
@@ -17,7 +19,12 @@ class ResourcesServiceProvider extends ServiceProvider
     public function register()
     {
         $this->app->singleton('Resources', function ($app) {
-            return new App\Helpers\Resources($app);
+            return new Resources($app);
+        });
+
+        $this->app->singleton('UncleResource', function ($app, $parameters) {
+            //dd($app, $parameters);
+            return new BaseResource($parameters['name']);
         });
 
         $migrationFromResources = [];

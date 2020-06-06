@@ -31,6 +31,11 @@ class XMLResource {
         return $this->convertSingleToArray($migrations);
     }
 
+    public function getResourceRoutes($name){
+        $routes = $this->xml->xpath("//resource[@name='{$name}']/routes");
+        return $this->convertSingleToArray($routes)[0];
+    }
+
     public function convertSingleToArray($item){
         if(!is_array($item)) return array($item);
         else return $item;

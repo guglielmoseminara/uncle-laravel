@@ -6,6 +6,19 @@ use App;
 
 class BaseResource {
 
+    protected $name;
+    protected $xml;
+
+    public function __construct($name) {
+
+        if(empty($this->name)) $this->name = $name;
+
+        $xml = App::make('XMLResource', ['resource' => $this->name]);
+        if($xml->hasXML()) {
+
+        }
+    }
+
     public function getModelClassPath($model) {
         return App::make('Utils')->getResourcesNamespace()."\\".ucfirst($this->name)."\\Models\\".ucfirst($model);
     }
@@ -56,5 +69,5 @@ class BaseResource {
     public function getPivotInstance($pivot) {
         return App::make($this->getPivotClassPath($pivot));
     }
-
+    
 }
