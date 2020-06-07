@@ -27,9 +27,9 @@ class XMLRouteResolver {
 
     private function generateRoute($api,$params){
         $method = $params['method']->__toString();
-        if($method == 'match')
-        {
-            $api->$method($params['path'], App::make($params['resource']->__toString())->getControllerClassPath($params['controller']->__toString()) . '@'. $params['function']->__toString());
+        if($method == 'match') {
+            $acceptMethod = explode(',', $params['acceptMethod']->__toString());
+            $api->$method($acceptMethod,$params['path'], App::make($params['resource']->__toString())->getControllerClassPath($params['controller']->__toString()) . '@'. $params['function']->__toString());
         }
         else $api->$method($params['path'], App::make($params['resource']->__toString())->getControllerClassPath($params['controller']->__toString()) . '@'. $params['function']->__toString());
     }
