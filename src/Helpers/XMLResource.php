@@ -32,7 +32,7 @@ class XMLResource {
         return $this->convertSingleToArray($migrations);
     }
 
-    public function getResourceRoutes($name){
+    public function getResourceRoutes(){
         $routes = $this->xml->xpath("//resource/routes");
         return $this->convertSingleToArray($routes);
     }

@@ -6,14 +6,19 @@ use UncleProject\UncleLaravel\Helpers\XMLRouteResolver;
 use Dingo\Api\Routing\Router;
 use App;
 
-/*$api = app(Router::class);
-$xml = App::make('XMLResource',['resource' => 'Tests']);
-$routes = $xml->getResourceRoutes('Tests');
+$api = app(Router::class);
+$xml = App::make('XMLResource');
+$routes = $xml->getResourceRoutes();
 $routeRevolver = new XMLRouteResolver();
 
-$api->version('v1', function ($api) use ($routes, $routeRevolver){
+foreach ($routes as $resourceRoutes)
+{
+    foreach ($resourceRoutes as $versionRoutes){
+        $api->version($versionRoutes->attributes()['v']->__toString(), function ($api) use ($versionRoutes, $routeRevolver){
 
-    foreach ($routes as $route)
-        $routeRevolver->createRoutes($api, $route);
+            $routeRevolver->createRoutes($api, $versionRoutes);
 
-});*/
+        });
+    }
+}
+
