@@ -19,8 +19,8 @@ class BaseMigration extends Migration
 
     public function up()
     {
-        $xml = App::make('XMLResource',['resource' => $this->resourceName]);
-        $migrations = $xml->getDatabaseSchemas();
+        $xml = App::make('XMLResource');
+        $migrations = $xml->getResourceDatabaseSchemas($this->resourceName);
 
         foreach($migrations as $schema){
             Schema::create($schema->attributes()['name'], function (Blueprint $table) use($schema) {

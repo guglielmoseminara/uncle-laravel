@@ -22,8 +22,8 @@ class XMLResource {
         return isset($this->xml);
     }
 
-    public function getDatabaseSchemas(){
-        $migrations = $this->xml->xpath('migrations/schema');
+    public function getResourceDatabaseSchemas($name){
+        $migrations = $this->xml->xpath("//resource[@name='{$name}']/migrations/schema");
         return $this->convertSingleToArray($migrations);
     }
 
