@@ -2,6 +2,7 @@
 
 namespace UncleProject\UncleLaravel\Command\Relation;
 
+use Illuminate\Support\Str;
 use UncleProject\UncleLaravel\Classes\BaseCommand;
 use Symfony\Component\Console\Input\InputOption;
 
@@ -89,7 +90,7 @@ class BaseRelationCommand extends BaseCommand
 
             $functionName = lcfirst($model);
             if(in_array($relation, ['HasMany','BelongsToMany','MorphMany']))
-                $functionName = str_plural($functionName);
+                $functionName = Str::plural($functionName);
 
             if(!$this->fileExistFunction($modelPath, $functionName))
             {

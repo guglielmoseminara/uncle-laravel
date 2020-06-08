@@ -3,6 +3,7 @@
 namespace UncleProject\UncleLaravel\Classes;
 
 use Illuminate\Console\Command;
+use Illuminate\Support\Str;
 
 class BaseCommand extends Command
 {
@@ -21,12 +22,12 @@ class BaseCommand extends Command
         $resourceName = ucfirst($input);
 
         $names = [
-            'singular' => str_singular($resourceName),
-            'plural' => str_plural($resourceName),
+            'singular' => Str::singular($resourceName),
+            'plural' => Str::plural($resourceName),
         ];
 
         if($names['singular'] == $names['plural']){
-            $names['plural'] = str_plural($names['singular']);
+            $names['plural'] = Str::plural($names['singular']);
         }
 
         return $names;

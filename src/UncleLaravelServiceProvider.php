@@ -91,9 +91,8 @@ class UncleLaravelServiceProvider extends ServiceProvider
             return new Utils($app);
         });
 
-        $this->app->singleton('XMLResource', function ($app, $parameters) {
-            $xml = new XMLResource($app, $parameters['resource']);
-            return $xml;
+        $this->app->singleton('XMLResource', function ($app) {
+            return new XMLResource($app);
         });
     }
 

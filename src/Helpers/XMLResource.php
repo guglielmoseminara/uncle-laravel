@@ -7,14 +7,15 @@ class XMLResource {
 
     private $xml;
 
-    public function __construct($app ,$resource) {
-        $this->load($resource);
+    public function __construct($app) {
+        $this->load();
     }
 
-    public function load($resource){
-        $filepath = app_path('Http'.DIRECTORY_SEPARATOR.'Resources'.DIRECTORY_SEPARATOR.$resource.DIRECTORY_SEPARATOR.$resource).'.xml';
-        if(\File::exists($filepath))
-            $this->xml = simplexml_load_file($filepath);
+    public function load($resource = null){
+        if(isset($resource)) $xmlPath = app_path('Http'.DIRECTORY_SEPARATOR.'Resources'.DIRECTORY_SEPARATOR.$resource.DIRECTORY_SEPARATOR.$resource).'.xml';
+        else $xmlPath = app_path('Http'.DIRECTORY_SEPARATOR.'Resources'.DIRECTORY_SEPARATOR.'api.uncle.xml');
+        if(\File::exists($xmlPath))
+            $this->xml = simplexml_load_file($xmlPath);
     }
 
     public function hasXML(){
@@ -32,8 +33,8 @@ class XMLResource {
     }
 
     public function getResourceRoutes($name){
-        $routes = $this->xml->xpath("//resource[@name='{$name}']/routes");
-        return $this->convertSingleToArray($routes)[0];
+        $routes = $this->xml->xpath("//resource/routes");
+        return $this->convertSingleToArray($routes);
     }
 
     public function convertSingleToArray($item){

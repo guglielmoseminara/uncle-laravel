@@ -60,6 +60,7 @@ class ResourcesServiceProvider extends ServiceProvider
 
         $this->loadMigrationsFrom($migrationFromResources);
 
+        $this->loadRoutesFrom(__DIR__. DIRECTORY_SEPARATOR . '..'.DIRECTORY_SEPARATOR .'XMLCore' . DIRECTORY_SEPARATOR ."XMLRoutes.php");
     }
 
     /**
