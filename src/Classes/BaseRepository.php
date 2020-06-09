@@ -10,10 +10,12 @@ class BaseRepository extends EloquentBaseRepository {
     public function boot() {
         $this->pushCriteria(app('\UncleProject\UncleLaravel\Classes\BaseRequestCriteria'));
 
-        $xml = App::make('XMLResource',['resource' => $this->resourceName]);
+        $xml = App::make('XMLResource');
         if($xml->hasXML()) {
-            $searchables = $xml->getRepositorySearchable('Test');
-
+            $xmlConfig = $xml->getRepository(get_class($this));
+            dd(get_class($this));
+            $searchables = $xmlConfig->xpath('searchables/field');
+            dd($searchables);
             if (!empty($searchables)) {
                 foreach ($searchables as $searchable) {
                     if (isset($searchable->attributes()['option']))
