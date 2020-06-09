@@ -6,16 +6,15 @@ use App;
 
 class XMLRouteResolver {
 
-    public function createRoutes($api, $routes)
+    public function createRoutes($api, $routes,$test = 0)
     {
         foreach ($routes as $key => $route){
             if($key == 'group'){
                 $optionGroup = [];
                 if(isset($route->attributes()['prefix'])) $optionGroup['prefix'] = $route->attributes()['prefix']->__toString();
                 if(isset($route->attributes()['middleware'])) $optionGroup['middleware'] = explode('|',$route->attributes()['middleware']->__toString());
-                $subroute = $route->xpath('routes')[0];
-                $api->group($optionGroup, function ($api) use ($subroute){
-                    $this->createRoutes($api, $subroute);
+                $api->group($optionGroup, function ($api) use ($route){
+                    $this->createRoutes($api, $route, 1);
                 });
             }
             else{
