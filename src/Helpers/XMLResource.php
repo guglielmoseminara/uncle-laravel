@@ -34,6 +34,12 @@ class XMLResource {
         else return null;
     }
 
+    public function getModel($name){
+        $repository = $this->xml->xpath("//model[@name='{$name}']");
+        if($repository) return $this->convertSingleToArray($repository)[0];
+        else return null;
+    }
+
     public function getRequestMethod($name, $action){
         $method = $this->xml->xpath("//request[@name='{$name}']/method[@name='{$action}']");
         if($method) return $this->convertSingleToArray($method)[0];

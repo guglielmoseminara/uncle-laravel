@@ -71,7 +71,6 @@ class BaseActionBasedFormRequest extends FormRequest
                         $rules[$field->attributes()['name']->__toString()] = rtrim($rules_string,'|');
                     }
                 }
-
             }
         }
 
