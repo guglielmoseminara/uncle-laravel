@@ -24,17 +24,26 @@ class XMLResource {
 
     public function getResourceDatabaseSchemas($name){
         $migrations = $this->xml->xpath("//resource[@name='{$name}']/migrations/schema");
-        return $this->convertSingleToArray($migrations);
+        if($migrations ) return $this->convertSingleToArray($migrations);
+        else return null;
     }
 
     public function getRepository($name){
-        $migrations = $this->xml->xpath("//repository[@name='{$name}']");
-        return $this->convertSingleToArray($migrations);
+        $repository = $this->xml->xpath("//repository[@name='{$name}']");
+        if($repository) return $this->convertSingleToArray($repository)[0];
+        else return null;
+    }
+
+    public function getRequestMethod($name, $action){
+        $method = $this->xml->xpath("//request[@name='{$name}']/method[@name='{$action}']");
+        if($method) return $this->convertSingleToArray($method)[0];
+        else return null;
     }
 
     public function getResourceRoutes(){
         $routes = $this->xml->xpath("//resource/routes");
-        return $this->convertSingleToArray($routes);
+        if($routes) return $this->convertSingleToArray($routes);
+        else return null;
     }
 
     public function convertSingleToArray($item){

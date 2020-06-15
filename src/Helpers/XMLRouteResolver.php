@@ -6,7 +6,7 @@ use App;
 
 class XMLRouteResolver {
 
-    public function createRoutes($api, $routes,$test = 0)
+    public function createRoutes($api, $routes)
     {
         foreach ($routes as $key => $route){
             if($key == 'group'){
@@ -14,7 +14,7 @@ class XMLRouteResolver {
                 if(isset($route->attributes()['prefix'])) $optionGroup['prefix'] = $route->attributes()['prefix']->__toString();
                 if(isset($route->attributes()['middleware'])) $optionGroup['middleware'] = explode('|',$route->attributes()['middleware']->__toString());
                 $api->group($optionGroup, function ($api) use ($route){
-                    $this->createRoutes($api, $route, 1);
+                    $this->createRoutes($api, $route);
                 });
             }
             else{
