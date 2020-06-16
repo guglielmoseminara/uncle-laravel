@@ -22,33 +22,39 @@ class XMLResource {
         return isset($this->xml);
     }
 
-    public function getResourceDatabaseSchemas($name){
-        $migrations = $this->xml->xpath("//resource[@name='{$name}']/migrations/schema");
-        if($migrations ) return $this->convertSingleToArray($migrations);
-        else return null;
-    }
-
     public function getRepository($name){
-        $repository = $this->xml->xpath("//repository[@name='{$name}']");
-        if($repository) return $this->convertSingleToArray($repository)[0];
-        else return null;
+        return $this->getXMLElement("//repository[@name='{$name}']");
     }
 
     public function getModel($name){
-        $repository = $this->xml->xpath("//model[@name='{$name}']");
-        if($repository) return $this->convertSingleToArray($repository)[0];
-        else return null;
+        return $this->getXMLElement("//model[@name='{$name}']");
+    }
+
+    public function getTransformer($name){
+        return $this->getXMLElement("//transformer[@name='{$name}']");
     }
 
     public function getRequestMethod($name, $action){
-        $method = $this->xml->xpath("//request[@name='{$name}']/method[@name='{$action}']");
-        if($method) return $this->convertSingleToArray($method)[0];
-        else return null;
+        return $this->getXMLElement("//request[@name='{$name}']/method[@name='{$action}']");
     }
 
     public function getResourceRoutes(){
-        $routes = $this->xml->xpath("//resource/routes");
-        if($routes) return $this->convertSingleToArray($routes);
+        return $this->getXMLElements("//resource/routes");
+    }
+
+    public function getResourceDatabaseSchemas($name){
+        return $this->getXMLElements("//resource[@name='{$name}']/migrations/schema");
+    }
+
+    public function getXMLElement($xpath){
+        $element = $this->xml->xpath($xpath);
+        if($element) return $this->convertSingleToArray($element)[0];
+        else return null;
+    }
+
+    public function getXMLElements($xpath){
+        $element = $this->xml->xpath($xpath);
+        if($element) return $this->convertSingleToArray($element);
         else return null;
     }
 
