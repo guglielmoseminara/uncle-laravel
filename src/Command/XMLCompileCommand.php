@@ -38,24 +38,22 @@ class XMLCompileCommand extends BaseCommand
         $this->callSilent('config:cache', [ '--env' => 'local']);
 
         $xmlFile = $this->resourcesPath.DIRECTORY_SEPARATOR.'api.uncle.xml';
-        if (!\File::exists($xmlFile)) {
-            \File::delete($xmlFile);
-        }
 
         \File::put($xmlFile,
             '<uncle>'.PHP_EOL.'</uncle>'
         );
-
 
         if(!empty(config('uncle.resources'))){
             foreach(config('uncle.resources') as $name => $resourcePath){
                 $xmlResourceFile = $this->resourcesPath.DIRECTORY_SEPARATOR.$name.DIRECTORY_SEPARATOR.$name.'.uncle.xml';
                 if (\File::exists($xmlResourceFile)) {
                     $this->writeInFile($xmlFile, '<uncle>', \File::get($xmlResourceFile));
+                    $this->info("Xml configuration file of resource {$name} inserted in api.uncle.xml");
                 }
+                else $this->info("Resource {$name} does not have an xml configuration file!");
             }
         }
-        else $this->info("Command array to run is empty! Enter new commands to run");
+        else $this->info("This project has no API resources yet.");
 
     }
 
