@@ -32,6 +32,7 @@ class CommandsServiceProvider extends ServiceProvider
 
             //Project
             \UncleProject\UncleLaravel\Command\ProjectCreateCommand::class,
+            \UncleProject\UncleLaravel\Command\XMLCompileCommand::class,
         ]);
     }
 

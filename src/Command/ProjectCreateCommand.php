@@ -20,7 +20,7 @@ class ProjectCreateCommand extends BaseCommand
      *
      * @var string
      */
-    protected $description = 'Create a new resource in project';
+    protected $description = 'Execute the list of generate api project';
 
     /**
      * Create a new command instance.
