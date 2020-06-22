@@ -2,6 +2,9 @@
 
 namespace UncleProject\UncleLaravel\Traits;
 
+use Illuminate\Support\Str;
+use Illuminate\Support\Arr;
+
 trait LanguageRequest {
 
     public function rules(){
@@ -19,12 +22,12 @@ trait LanguageRequest {
     }
 
     protected function generateRules($rules) {
-        $languageFields = array_where(
+        $languageFields = Arr::where(
             $rules, function ($value, $key) {
                 if (is_array($value)) {
                     $value = implode('|', $value);
                 }
-                return str_contains($value, ['language']);
+                return Str::contains($value, ['language']);
             }
         );
         $locales = config('app.locales');   
@@ -34,13 +37,13 @@ trait LanguageRequest {
             foreach($locales as $lang) {
                 $withoutAll[] = '"'.$field.':'.$lang.'"';
                 $fields_rules_lang = $field_rules;
-                if (str_contains($fields_rules_lang, ['required'])){
+                if (Str::contains($fields_rules_lang, ['required'])){
                     $fields_rules_lang .= '|sometimes';
                 }
                 $rules[$field.':'.$lang] = $fields_rules_lang;
 
             }
-            if (str_contains($field_rules, ['required'])){
+            if (Str::contains($field_rules, ['required'])){
                 $field_rules = str_replace('required|', '', $field_rules);
                 $rules[$field] = $field_rules.'|required_without_all:'.implode(',', $withoutAll);
             } else {
