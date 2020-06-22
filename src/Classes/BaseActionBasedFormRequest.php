@@ -30,7 +30,7 @@ class BaseActionBasedFormRequest extends FormRequest
             unset($data['search']);
             $searchData = BaseRequestParser::parserSearchData($search);
             foreach($searchData as $key => $value) {
-                array_set($newSearchData, $key, $value);
+                data_set($newSearchData, $key, $value);
             }    
         }
         return array_merge($newSearchData, $data);
