@@ -10,6 +10,7 @@ use UncleProject\UncleLaravel\Traits\ControllerHelper;
 use Illuminate\Database\Eloquent\Model;
 use Symfony\Component\HttpFoundation\File\UploadedFile;
 use Illuminate\Database\Eloquent\Relations\Relation;
+use Illuminate\Support\Arr;
 use DB;
 use App;
 use Storage;
@@ -431,7 +432,7 @@ class ApiResourceDefaultController extends ApiResourceController{
             $id = $fillable['id'];
         }
 
-        if (array_except($fillable, ['id'])) {
+        if (Arr::except($fillable, ['id'])) {
             if (property_exists($this, 'pruneHasOne') && $this->pruneHasOne !== false) {
                 $relation->update($fillable);
             }
@@ -460,13 +461,13 @@ class ApiResourceDefaultController extends ApiResourceController{
                 if (array_key_exists('id', $fields)) {
                     $id = $fields['id'];
                 }
-                if (array_except($fields, ['id'])) {
+                if (Arr::except($fields, ['id'])) {
                     $record = $relation->updateOrCreate(['id' => $id], $fields);
                     array_push($keys, $record->id);
                     array_push($records, $record);
                 }
             } else {
-                if (array_except($fillable, ['id'])) {
+                if (Arr::except($fillable, ['id'])) {
                     $record = $relation->updateOrCreate(['id' => $id], $fillable);
                     array_push($keys, $record->id);
                     array_push($records, $record);
@@ -517,7 +518,7 @@ class ApiResourceDefaultController extends ApiResourceController{
             return $record;
         }
 
-        if (array_except($fillable, ['id'])) {
+        if (Arr::except($fillable, ['id'])) {
             if (!$relation->first()) {
                 $record = $relation->associate($related->create($fillable));
                 $model->save();
@@ -554,7 +555,7 @@ class ApiResourceDefaultController extends ApiResourceController{
             } else {
                 $id = '';
             }
-            if (array_except($fields, ['id'])) {
+            if (Arr::except($fields, ['id'])) {
                 $record = $related->where($fields)->first();
                 if (!$record) {
                     $record = $related->updateOrCreate(['id' => $id], $fields);
