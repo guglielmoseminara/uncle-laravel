@@ -25,12 +25,13 @@ class BaseActionBasedFormRequest extends FormRequest
     {
         $data = $this->all();
         $newSearchData = [];
+        $action = explode('@', request()->route()->getActionName())[1];
         if (isset($data['search'])) {
             $search = $data['search'];
             unset($data['search']);
             $searchData = BaseRequestParser::parserSearchData($search);
             foreach($searchData as $key => $value) {
-                data_set($newSearchData, $key, $value);
+                data_set($newSearchData, 'search.'.$key, $value);
             }    
         }
         return array_merge($newSearchData, $data);
