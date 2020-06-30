@@ -14,7 +14,7 @@ class {resourceName}TableSeeder extends Seeder
      */
     public function run()
     {
-        ${resourceSingleNameLower}Class = App::make('{resourceName}')->getModelClassPath('{resourceSingleName}');
+        ${resourceSingleNameLower}Class = App::make('{resourceName}Resource')->getModelClassPath('{resourceSingleName}');
 
         factory(${resourceSingleNameLower}Class, 10)->create();
     }
