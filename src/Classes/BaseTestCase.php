@@ -284,7 +284,7 @@ abstract class BaseTestCase extends TestCase
         );
         $this->assertIsUpdated($response, $fakerData);
 
-        return [ 'response' => $response, 'request' => $fakerData['data']];
+        return [ 'response' => $response, 'request' => $fakerData];
     }
 
     public function defaultTestDelete($userToken, $url, $resource, $faker, $code = 200, $fakerFunction = 'getStore'){
