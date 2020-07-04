@@ -116,7 +116,7 @@ class ApiResourceDefaultController extends ApiResourceController{
     }
 
     public function store(Request $request) {
-        $this->getFormRequestInstance();
+        $request = $this->getFormRequestInstance();
 
         DB::beginTransaction();
 
@@ -157,12 +157,12 @@ class ApiResourceDefaultController extends ApiResourceController{
     }
 
     public function update(Request $request, $key) {
-        $this->getFormRequestInstance();
+        $request = $this->getFormRequestInstance();
         $model = $this->findFirstByKey($key);
         if (!$model) {
             return $this->validNotFoundJsonResponse();
         }
-        $this->setRequestUser($request);
+        $requestData = $this->setRequestUser($request, $request->validated());
 
         DB::beginTransaction();
 
@@ -170,7 +170,7 @@ class ApiResourceDefaultController extends ApiResourceController{
             $this->beforeUpdate($model, $request);
 
         try {
-            $instance = $this->repository->update($request->only($model->getFillable()), $key);
+            $instance = $this->repository->update($requestData, $key);
             $model = $instance;
             $mergedRequest = $this->uploadFiles($request, $model);
             $this->updateOrCreateRelations($mergedRequest, $model);
@@ -219,7 +219,7 @@ class ApiResourceDefaultController extends ApiResourceController{
             $relativePath = $this->getDefaultRelativePath();
         }
         $fileBag = $request->files;
-        $requestData = $request->all();
+        $requestData = $request->validated();
         $modelId = $model->id;
         if (method_exists($model, 'getUploadableId')) {
             $modelId = $model->getUploadableId();
@@ -315,10 +315,10 @@ class ApiResourceDefaultController extends ApiResourceController{
 
     protected function storeDB(Request $request, $ignoreRelations = false){
 
-        $this->setRequestUser($request);
+        $requestData = $this->setRequestUser($request, $request->validated());
 
         try {
-            $instance = $this->repository->create($request->all());
+            $instance = $this->repository->create($requestData);
             $model = $instance;
             $number = $model->{$model->getRouteKeyName()};
             $requestData = $this->uploadFiles($request, $model);
@@ -602,7 +602,7 @@ class ApiResourceDefaultController extends ApiResourceController{
         return !(!method_exists($model, $relationName) || !$model->{$relationName}());
     }
 
-    private function setRequestUser(&$request) {
+    /*private function setRequestUser(&$request) {
         $user = $request->user();
         if ($user) {
             $isAdmin = in_array('admin', $user->getRoleNames()->toArray());
@@ -612,6 +612,19 @@ class ApiResourceDefaultController extends ApiResourceController{
                 }
             }
         }
+    }*/
+
+    private function setRequestUser(&$request, $fields) {
+        $user = $request->user();
+        if ($user) {
+            $isAdmin = in_array('admin', $user->getRoleNames()->toArray());
+            if ($this->repository->getRelationship('user') == 'BelongsTo') {
+                if (!isset($fields['user_id']) || !$isAdmin || ($isAdmin && isset($fields['user_id']) && $fields['user_id'] == $request->user()->id)) {
+                    $fields['user_id'] = $request->user()->id;
+                }
+            }
+        }
+        return $fields;
     }
 
 }
