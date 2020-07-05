@@ -43,6 +43,16 @@ class UncleLaravelServiceProvider extends ServiceProvider
             }
             return $flag;
         });
+        Validator::extend('exists_or', function ($attribute, $value, $parameters, $validator) {
+            if (!empty($value)) {
+                $values = explode('|', $value);
+                $validator = Validator::make($values, [
+                    '*' => 'exists:'.$parameters[0].','.$parameters[1]
+                ]);
+                return !$validator->fails();
+            }
+            else return false;
+        });
         Validator::extendImplicit('range_numeric', function ($attribute, $value, $parameters, $validator) {
             $values = explode('-', $value);
             if (count($values) == 1 || count($values) == 2) {
