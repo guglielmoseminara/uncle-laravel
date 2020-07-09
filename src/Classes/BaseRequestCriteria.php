@@ -179,15 +179,15 @@ class BaseRequestCriteria implements CriteriaInterface
                         $field = $model->getModel()->getJoinField($order, $sorters[$index]);
                         list($relatedTable, $relatedId) = explode('.', $field);
                         $relationModel = $model->getModel()->$relation()->getModel();
-                        $relationKey = $model->getModel()->$relation()->getForeignKeyName();
-                        $foreign_key = 'id';
+                        $relationKey = $relationModel->getKeyName();
+                        $model = $model->leftJoin($relatedTable, "$table.id", '=', "$relatedTable.$relationKey");
                         if (isset($relationModel->translatable) && in_array($relatedId, $relationModel->translatable)) {
-                            $relatedTable = $relationModel->getI18nTable();
+                            $relatedI18Table = $relationModel->getI18nTable();
                             $relationKey = $relationModel->translationModel()->getKeyName();
-                            $foreign_key = $model->getModel()->$relation()->getForeignKeyName();
+                            $model = $model->leftJoin($relatedI18Table, "$relatedTable.id", '=', "$relatedI18Table.$relationKey");
+                            $relatedTable = $relatedI18Table;
                         }
-                        $model = $model = $model->leftJoin($relatedTable, "$table.$foreign_key", '=', "$relatedTable.$relationKey")
-                            ->orderBy($relatedTable . '.' . $relatedId, $sorters[$index]);
+                        $model = $model->orderBy($relatedTable . '.' . $relatedId, $sorters[$index]);
                     }
                 } else {
                     $model = $model->orderBy($order, $sorters[$index]);
