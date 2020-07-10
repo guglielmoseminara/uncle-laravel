@@ -178,9 +178,16 @@ class BaseRequestCriteria implements CriteriaInterface
                     if (method_exists($modelInstance, 'getJoinField')) {
                         $field = $model->getModel()->getJoinField($order, $sorters[$index]);
                         list($relatedTable, $relatedId) = explode('.', $field);
-                        $relationModel = $model->getModel()->$relation()->getModel();
-                        $foreignKey = $model->getModel()->$relation()->getForeignKeyName();
-                        $relationKey = $relationModel->getKeyName();
+                        $relationInstance= $model->getModel()->$relation();
+                        $relationModel = $relationInstance->getModel();
+                        if(method_exists($relationInstance, 'getOwnerKeyName')) {
+                            $foreignKey = $relationInstance->getForeignKeyName();
+                            $relationKey = $relationInstance->getOwnerKeyName();
+                        }
+                        else {
+                            $foreignKey = 'id';
+                            $relationKey = $relationInstance->getForeignKeyName();
+                        }
                         $model = $model->leftJoin($relatedTable, "$table.$foreignKey", '=', "$relatedTable.$relationKey");
                         if (isset($relationModel->translatable) && in_array($relatedId, $relationModel->translatable)) {
                             $relatedI18Table = $relationModel->getI18nTable();
