@@ -161,9 +161,13 @@ class BaseRequestCriteria implements CriteriaInterface
                 }
             });
         }
+
         if (isset($orderBy) && !empty($orderBy)) {
             $orders = explode('|', $orderBy);
             $sorters = explode('|', $sortedBy);
+            $modelInstance = $model->getModel();
+            $tableKeyName = $modelInstance->getKeyName();
+            $selectColumns = ['*', $model->getModel()->getTable().".$tableKeyName as $tableKeyName"];
             foreach($orders as $index => $order)
             {
                 $relation = null;
@@ -173,7 +177,6 @@ class BaseRequestCriteria implements CriteriaInterface
                     $relation = implode('.', $explode);
                 }
                 if($relation) {
-                    $modelInstance = $model->getModel();
                     $table = $modelInstance->getTable();
                     if (method_exists($modelInstance, 'getJoinField')) {
                         $field = $model->getModel()->getJoinField($order, $sorters[$index]);
@@ -189,11 +192,14 @@ class BaseRequestCriteria implements CriteriaInterface
                             $relationKey = $relationInstance->getForeignKeyName();
                         }
                         $model = $model->leftJoin($relatedTable, "$table.$foreignKey", '=', "$relatedTable.$relationKey");
+                        $relatedKeyName = $relationModel->getKeyName();
+                        $selectColumns[] = "{$relatedTable}.$relatedKeyName as {$relatedTable}_$relatedKeyName";
                         if (isset($relationModel->translatable) && in_array($relatedId, $relationModel->translatable)) {
                             $relatedI18Table = $relationModel->getI18nTable();
                             $relationKey = $relationModel->translationModel()->getKeyName();
                             $model = $model->leftJoin($relatedI18Table, "$relatedTable.id", '=', "$relatedI18Table.$relationKey");
                             $relatedTable = $relatedI18Table;
+                            $selectColumns[] = "{$relatedI18Table}.$relationKey as {$relatedI18Table}_$relationKey";
                         }
                         $model = $model->orderBy($relatedTable . '.' . $relatedId, $sorters[$index]);
                     }
@@ -201,7 +207,7 @@ class BaseRequestCriteria implements CriteriaInterface
                     $model = $model->orderBy($order, $sorters[$index]);
                 }
             }
-            
+            $model = $model->select($selectColumns);
         }
 
         if (isset($filter) && !empty($filter)) {
