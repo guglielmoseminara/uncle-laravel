@@ -35,6 +35,9 @@ class BaseRequestCriteria implements CriteriaInterface
             $valueArr = explode('.', $value);
             $condition = '=';
         }
+        else if($condition == 'like') {
+            $valueArr = [$value];
+        }
         else $valueArr = explode('-', $value);
         if (count($valueArr) > 1){
             if ($or) {
