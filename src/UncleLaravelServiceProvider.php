@@ -5,6 +5,7 @@ use Illuminate\Support\ServiceProvider;
 use Illuminate\Support\Facades\Blade;
 use Illuminate\Support\Facades\Schema;
 use Illuminate\Support\Facades\Validator;
+use Illuminate\Validation\Rule;
 use UncleProject\UncleLaravel\Helpers\Utils;
 use UncleProject\UncleLaravel\Helpers\XMLResource;
 
@@ -48,6 +49,22 @@ class UncleLaravelServiceProvider extends ServiceProvider
                 $values = explode('|', $value);
                 $validator = Validator::make($values, [
                     '*' => 'exists:'.$parameters[0].','.$parameters[1]
+                ]);
+                return !$validator->fails();
+            }
+            else return false;
+        });
+        Validator::extend('exists_with_columns', function ($attribute, $value, $parameters, $validator) {
+            if (!empty($value)) {
+                $values = explode('|', $value);
+                $validator = Validator::make($values, [
+                    '*' => [
+                        Rule::exists($parameters[0], $parameters[1])
+                            ->where(function ($query) use ($parameters) {
+                                for($i = 2; $i < count($parameters); $i++)
+                                    $query = $query->where($parameters[$i], $parameters[++$i]);
+                            }),
+                    ]
                 ]);
                 return !$validator->fails();
             }
