@@ -170,7 +170,8 @@ class BaseRequestCriteria implements CriteriaInterface
             $sorters = explode('|', $sortedBy);
             $modelInstance = $model->getModel();
             $tableKeyName = $modelInstance->getKeyName();
-            $selectColumns = ['*', $model->getModel()->getTable().".$tableKeyName as $tableKeyName"];
+            $table = $modelInstance->getTable();          
+            $selectColumns = [$table.'.*', $table.".$tableKeyName as $tableKeyName"];
             foreach($orders as $index => $order)
             {
                 $relation = null;
@@ -180,7 +181,6 @@ class BaseRequestCriteria implements CriteriaInterface
                     $relation = implode('.', $explode);
                 }
                 if($relation) {
-                    $table = $modelInstance->getTable();
                     if (method_exists($modelInstance, 'getJoinField')) {
                         $field = $model->getModel()->getJoinField($order, $sorters[$index]);
                         list($relatedTable, $relatedId) = explode('.', $field);
