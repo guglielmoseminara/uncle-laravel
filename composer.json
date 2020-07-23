@@ -22,7 +22,7 @@
       "paypal/rest-api-sdk-php": "^1.14",
       "riclep/lorem-flickr-faker": "^0.0.3",
       "cesargb/laravel-cascade-delete": "^0.6.0",
-      "guglielmoseminara/laravel-soft-cascade": "^5.8",
+      "guglielmoseminara/laravel-soft-cascade": "master",
       "guglielmoseminara/l5-resource-controller": "master",
       "guglielmoseminara/l5-action-based-form-request": "master",
       "guglielmoseminara/laravel-apidoc-generator": "master",
