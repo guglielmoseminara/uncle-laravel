@@ -171,7 +171,7 @@ class BaseRequestCriteria implements CriteriaInterface
             $modelInstance = $model->getModel();
             $tableKeyName = $modelInstance->getKeyName();
             $table = $modelInstance->getTable();          
-            $selectColumns = [$table.'.*', $table.".$tableKeyName as $tableKeyName"];
+            $selectColumns = ['*', $table.".$tableKeyName as $tableKeyName"];
             foreach($orders as $index => $order)
             {
                 $relation = null;
