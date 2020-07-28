@@ -200,7 +200,10 @@ class BaseRequestCriteria implements CriteriaInterface
                         if (isset($relationModel->translatable) && in_array($relatedId, $relationModel->translatable)) {
                             $relatedI18Table = $relationModel->getI18nTable();
                             $relationKey = $relationModel->translationModel()->getKeyName();
-                            $model = $model->leftJoin($relatedI18Table, "$relatedTable.id", '=', "$relatedI18Table.$relationKey");
+                            $model = $model->leftJoin($relatedI18Table, function ($join) use ($model) {
+                                $join->on("$relatedTable.id", '=', "$relatedI18Table.$relationKey")
+                                ->where("$relatedI18Table.locale", '=', $model->getLocale());
+                            });
                             $relatedTable = $relatedI18Table;
                             $selectColumns[] = "{$relatedI18Table}.$relationKey as {$relatedI18Table}_$relationKey";
                         }
