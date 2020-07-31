@@ -23,11 +23,13 @@ class BaseSearchAspect extends ModelSearchAspect {
             if (!is_array($attribute)) {
                 $newAttributes[] = $attribute;
             } else {
-                if ($attribute[0] == 'group_by') {
-                    $this->groupby = $attribute[1];
-                } else {
-                    foreach ($attribute as $k => $value) {
-                        $conditions[$k] = $value;
+                if (count($attribute) > 0) {
+                    if ($attribute[0] == 'group_by') {
+                        $this->groupby = $attribute[1];
+                    } else {
+                        foreach ($attribute as $k => $value) {
+                            $conditions[$k] = $value;
+                        }    
                     }    
                 }
             }
