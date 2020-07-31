@@ -627,16 +627,18 @@ class ApiResourceDefaultController extends ApiResourceController{
         return $fields;
     }
 
-    private function executeTransaction($callback){
+    protected function executeTransaction($callback){
         DB::beginTransaction();
         try {
-            $callback();
+            $output = $callback();
         } catch (\Exception $e) {
             DB::rollback();
             $message = $e->getMessage();
             throw new ResourceControllerException($message);
         }
         DB::commit();
+
+        return $output;
     }
 
 }
