@@ -38,6 +38,9 @@ class ApiMultiResourceController {
                     }
                     $searchQuery = array_merge($searchQuery, $whereQuery);
                 }
+                if (isset($vm['group_by'])) {
+                    $searchQuery = array_merge($searchQuery, ['group_by', $vm['group_by']]);
+                }
                 $vm['fields'][] = $searchQuery;
                 $searchResults = $searchResults->registerModel($modelClass, $vm['fields']);    
             }

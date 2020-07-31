@@ -14,6 +14,7 @@ use Schema;
 class BaseSearchAspect extends ModelSearchAspect {
 
     protected $conditions = [];
+    protected $groupby = [];
 
     public function __construct($model, $attributes) {
         $newAttributes = [];
@@ -22,8 +23,12 @@ class BaseSearchAspect extends ModelSearchAspect {
             if (!is_array($attribute)) {
                 $newAttributes[] = $attribute;
             } else {
-                foreach ($attribute as $k => $value) {
-                    $conditions[$k] = $value;
+                if ($attribute[0] == 'group_by') {
+                    $this->groupby = $attribute[1];
+                } else {
+                    foreach ($attribute as $k => $value) {
+                        $conditions[$k] = $value;
+                    }    
                 }
             }
         }
@@ -95,6 +100,9 @@ class BaseSearchAspect extends ModelSearchAspect {
                     }
                 }
             }
+        }
+        if (count($this->groupby) > 0) {
+            $query->groupby($this->groupby);
         }
     }
 
