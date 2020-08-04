@@ -431,16 +431,15 @@ class ApiResourceDefaultController extends ApiResourceController{
     protected function updateOrCreateHasOne(array $fillable, Model $model, Relation $relation)
     {
         $id = '';
-
-        if (array_key_exists('id', $fillable)) {
-            $id = $fillable['id'];
+        $primaryKey = $relation->getModel()->getKeyName();
+        if (array_key_exists($primaryKey, $fillable)) {
+            $id = $fillable[$primaryKey];
         }
-
-        if (Arr::except($fillable, ['id'])) {
+        if (Arr::except($fillable, [$primaryKey])) {
             if (property_exists($this, 'pruneHasOne') && $this->pruneHasOne !== false) {
                 $relation->update($fillable);
             }
-            return $relation->updateOrCreate(['id' => $id], $fillable);
+            return $relation->updateOrCreate([$primaryKey => $id], $fillable);
         }
 
         return null;
