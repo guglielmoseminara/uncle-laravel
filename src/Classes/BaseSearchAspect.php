@@ -24,8 +24,8 @@ class BaseSearchAspect extends ModelSearchAspect {
                 $newAttributes[] = $attribute;
             } else {
                 if (count($attribute) > 0) {
-                    if ($attribute[0] == 'group_by') {
-                        $this->groupby = $attribute[1];
+                    if (array_values($attribute)[0] == 'group_by') {
+                        $this->groupby = array_values($attribute)[1];
                     } else {
                         foreach ($attribute as $k => $value) {
                             $conditions[$k] = $value;
