@@ -162,7 +162,7 @@ class ApiResourceDefaultController extends ApiResourceController{
         if (!$model) {
             return $this->validNotFoundJsonResponse();
         }
-        $requestData = $this->setRequestUser($request, $request->validated());
+        $requestData = $this->setRequestUser($request, $request->validated(), $model);
 
         DB::beginTransaction();
 
@@ -617,11 +617,14 @@ class ApiResourceDefaultController extends ApiResourceController{
         }
     }*/
 
-    private function setRequestUser(&$request, $fields) {
+    private function setRequestUser(&$request, $fields, $model = null) {
         $user = $request->user();
         if ($user) {
             $isAdmin = in_array('admin', $user->getRoleNames()->toArray());
             if ($this->repository->getRelationship('user') == 'BelongsTo') {
+                if(isset($model) && isset($model->user_id)) {
+                    $fields['user_id'] = $model->user_id;
+                }
                 if (!isset($fields['user_id']) || !$isAdmin || ($isAdmin && isset($fields['user_id']) && $fields['user_id'] == $request->user()->id)) {
                     $fields['user_id'] = $request->user()->id;
                 }
