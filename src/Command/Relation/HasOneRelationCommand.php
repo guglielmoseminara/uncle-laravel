@@ -11,7 +11,7 @@ class HasOneRelationCommand extends BaseRelationCommand
      *
      * @var string
      */
-    protected $signature = 'relation:HasOne {resourceParent} {modelParent} {resourceChild} {modelChild}';
+    protected $signature = 'uncle:relation:HasOne {resourceParent} {modelParent} {resourceChild} {modelChild}';
 
     /**
      * The console command description.

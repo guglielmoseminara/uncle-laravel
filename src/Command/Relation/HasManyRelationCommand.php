@@ -11,7 +11,7 @@ class HasManyRelationCommand extends BaseRelationCommand
      *
      * @var string
      */
-    protected $signature = 'relation:HasMany {resourceParent} {modelParent} {resourceChild} {modelChild}';
+    protected $signature = 'uncle:relation:HasMany {resourceParent} {modelParent} {resourceChild} {modelChild}';
 
     /**
      * The console command description.

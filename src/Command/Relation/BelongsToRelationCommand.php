@@ -11,7 +11,7 @@ class BelongsToRelationCommand extends BaseRelationCommand
      *
      * @var string
      */
-    protected $signature = 'relation:BelongsTo {resourceParent} {modelParent} {resourceChild} {modelChild}';
+    protected $signature = 'uncle:relation:BelongsTo {resourceParent} {modelParent} {resourceChild} {modelChild}';
 
     /**
      * The console command description.

@@ -11,7 +11,7 @@ class ModelCommand extends BaseResourceCommand
      *
      * @var string
      */
-    protected $signature = 'resource:create-model {resource} {model}';
+    protected $signature = 'uncle:resource:create-model {resource} {model}';
 
     /**
      * The console command description.

@@ -12,7 +12,7 @@ class NotificationCommand extends BaseResourceCommand
      *
      * @var string
      */
-    protected $signature = 'resource:create-notification {resource} {notification}';
+    protected $signature = 'uncle:resource:create-notification {resource} {notification}';
 
     /**
      * The console command description.
@@ -69,7 +69,7 @@ class NotificationCommand extends BaseResourceCommand
             $notificationsViewsPath.DIRECTORY_SEPARATOR.$notificationName.'Mail.blade.php',
             $this->compileStub(
                 ['{resourceName}','{notificationName}'],
-                [$this->resourceName,$notificationName],
+                [$this->resourceName, $notificationName],
                 __DIR__.'/stubs/Mail.stub')
         );
     }
