@@ -1,6 +1,7 @@
 <?php
 namespace UncleProject\UncleLaravel;
 
+use Illuminate\Support\Facades\Lang;
 use Illuminate\Support\ServiceProvider;
 use Illuminate\Support\Facades\Blade;
 use Illuminate\Support\Facades\Schema;
@@ -40,6 +41,11 @@ class UncleLaravelServiceProvider extends ServiceProvider
             }
             return $flag;
         });
+        Validator::replacer('in_or', function ($message, $attribute, $rule, $parameters) {
+            if(Lang::has($message)) return str_replace(':attribute', $attribute, Lang::has($message));
+            else return str_replace(':attribute', $attribute, 'One or more element in :attribute are not accepted');
+        });
+
         Validator::extendImplicit('set_in', function ($attribute, $value, $parameters, $validator) {
             if (!empty($value)) {
                 $values = explode(',', $value);
@@ -48,8 +54,13 @@ class UncleLaravelServiceProvider extends ServiceProvider
                 ]);
                 return !$validator->fails();
             }
-            else return false;
+            else return true;
         });
+        Validator::replacer('set_in', function ($message, $attribute, $rule, $parameters) {
+            if(Lang::has($message)) return str_replace(':attribute', $attribute, Lang::has($message));
+            else return str_replace(':attribute', $attribute, 'One or more element in :attribute are not accepted');
+        });
+
         Validator::extend('exists_or', function ($attribute, $value, $parameters, $validator) {
             if (!empty($value)) {
                 $values = explode('|', $value);
@@ -58,8 +69,13 @@ class UncleLaravelServiceProvider extends ServiceProvider
                 ]);
                 return !$validator->fails();
             }
-            else return false;
+            else return true;
         });
+        Validator::replacer('exists_or', function ($message, $attribute, $rule, $parameters) {
+            if(Lang::has($message)) return str_replace(':attribute', $attribute, Lang::has($message));
+            else return str_replace(':attribute', $attribute, ':attribute not exist in tables');
+        });
+
         Validator::extend('exists_with_columns', function ($attribute, $value, $parameters, $validator) {
             if (!empty($value)) {
                 $values = explode('|', $value);
@@ -74,8 +90,13 @@ class UncleLaravelServiceProvider extends ServiceProvider
                 ]);
                 return !$validator->fails();
             }
-            else return false;
+            else return true;
         });
+        Validator::replacer('exists_with_columns', function ($message, $attribute, $rule, $parameters) {
+            if(Lang::has($message)) return str_replace(':attribute', $attribute, Lang::has($message));
+            else return str_replace(':attribute', $attribute, ':attribute not exist with this parameter columns');
+        });
+
         Validator::extendImplicit('range_numeric', function ($attribute, $value, $parameters, $validator) {
             $values = explode('-', $value);
             if (count($values) == 1 || count($values) == 2) {
@@ -93,16 +114,31 @@ class UncleLaravelServiceProvider extends ServiceProvider
             }
             return false;
         });
+        Validator::replacer('range_numeric', function ($message, $attribute, $rule, $parameters) {
+            if(Lang::has($message)) return str_replace(':attribute', $attribute, Lang::has($message));
+            else return str_replace(':attribute', $attribute, ':attribute is an invalid range numeric');
+        });
+
         Validator::extendImplicit('latitude',
             function ($attribute, $value, $parameters, $validator) {
                 if (!empty($value)) return preg_match('/^[-]?(([0-8]?[0-9])\.(\d+))|(90(\.0+)?)$/', $value);
-                else return false;
+                else return true;
             });
+        Validator::replacer('latitude', function ($message, $attribute, $rule, $parameters) {
+            if(Lang::has($message)) return str_replace(':attribute', $attribute, Lang::has($message));
+            else return str_replace(':attribute', $attribute, ':attribute is an invalid latitude');
+        });
+
         Validator::extendImplicit('longitude',
             function ($attribute, $value, $parameters, $validator) {
                 if (!empty($value)) return preg_match('/^[-]?((((1[0-7][0-9])|([0-9]?[0-9]))\.(\d+))|180(\.0+)?)$/', $value);
-                else return false;
+                else return true;
             });
+        Validator::replacer('longitude', function ($message, $attribute, $rule, $parameters) {
+            if(Lang::has($message)) return str_replace(':attribute', $attribute, Lang::has($message));
+            else return str_replace(':attribute', $attribute, ':attribute is an invalid longitude');
+        });
+
         Validator::extend('phone', function ($attribute, $value, $parameters, $validator) {
             return preg_match('%^(?:(?:\(?(?:00|\+)([1-4]\d\d|[1-9]\d?)\)?)?[\-\.\ \\\/]?)?((?:\(?\d{1,}\)?[\-\.\ \\\/]?){0,})(?:[\-\.\ \\\/]?(?:#|ext\.?|extension|x)[\-\.\ \\\/]?(\d+))?$%i', $value) && strlen($value) >= 10;
         });
