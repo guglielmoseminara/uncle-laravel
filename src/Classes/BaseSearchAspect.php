@@ -15,6 +15,7 @@ class BaseSearchAspect extends ModelSearchAspect {
 
     protected $conditions = [];
     protected $groupby = [];
+    protected $scopes = [];
 
     public function __construct($model, $attributes) {
         $newAttributes = [];
@@ -26,7 +27,11 @@ class BaseSearchAspect extends ModelSearchAspect {
                 if (count($attribute) > 0) {
                     if (array_values($attribute)[0] == 'group_by') {
                         $this->groupby = array_values($attribute)[1];
-                    } else {
+                    } 
+                    else if (array_values($attribute)[0] == 'scopes') {
+                        $this->scopes = array_values($attribute)[1];
+                    }
+                    else {
                         foreach ($attribute as $k => $value) {
                             $conditions[$k] = $value;
                         }    
@@ -47,6 +52,7 @@ class BaseSearchAspect extends ModelSearchAspect {
         $query = ($this->model)::query();
 
         $this->addSearchConditions($query, $term);
+        $this->addSearchScopes($query);
 
         return $query->take(10)->get();
     }
@@ -107,5 +113,14 @@ class BaseSearchAspect extends ModelSearchAspect {
             $query->groupby($this->groupby);
         }
     }
+
+    public function addSearchScopes(Builder $query) {
+        if (count($this->scopes) > 0) {
+            foreach($this->scopes as $kscope => $vscope) {
+                $query->$vscope();
+            }
+        }
+    }
+
 
 }

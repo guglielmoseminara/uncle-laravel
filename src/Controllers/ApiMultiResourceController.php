@@ -30,7 +30,8 @@ class ApiMultiResourceController {
         $types = $request->get('type') ? explode('|', $request->get('type')) : [];
         foreach($this->resources as $km => $vm) {
             if (count($types) == 0 || in_array(strtolower($km), $types)){
-                $modelClass = App::make($km.'Resource')->getModelClassPath($vm['model']);
+                $resourceName = isset($vm['resource']) ? $vm['resource'] : $km;
+                $modelClass = App::make($resourceName.'Resource')->getModelClassPath($vm['model']);
                 if (isset($vm['where'])) {
                     $whereQuery = [];
                     foreach ($vm['where'] as $where) {
@@ -40,6 +41,9 @@ class ApiMultiResourceController {
                 }
                 if (isset($vm['group_by'])) {
                     $searchQuery = array_merge($searchQuery, ['group_by', $vm['group_by']]);
+                }
+                if (isset($vm['scopes'])) {
+                    $searchQuery = array_merge($searchQuery, ['scopes', $vm['scopes']]);
                 }
                 $vm['fields'][] = $searchQuery;
                 $searchResults = $searchResults->registerModel($modelClass, $vm['fields']);    
