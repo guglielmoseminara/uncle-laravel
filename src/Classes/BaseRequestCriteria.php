@@ -153,7 +153,7 @@ class BaseRequestCriteria implements CriteriaInterface
                         if (!is_null($value)) {
                             if(!is_null($relation)) {
                                 $relatedTable = $this->getRelatedTableName($parentModel, $relation, $field);
-                                $query->whereHas($relation, function($query) use($field,$condition,$value, $relatedTable) {
+                                $query->whereHas($relation, function($query) use($field,$condition,$value, $valueType, $relatedTable) {
                                     $this->buildCondition($query, $relatedTable.'.'.$field, $condition, $value, $valueType);
                                 });
                             } else {
@@ -165,7 +165,7 @@ class BaseRequestCriteria implements CriteriaInterface
                         if (!is_null($value)) {
                             if(!is_null($relation)) {
                                 $relatedTable = $this->getRelatedTableName($parentModel, $relation, $field);
-                                $query->orWhereHas($relation, function($query) use($field,$condition,$value,$relatedTable) {
+                                $query->orWhereHas($relation, function($query) use($field,$condition,$value,$valueType, $relatedTable) {
                                     $this->buildCondition($query, $relatedTable.'.'.$field, $condition, $value, $valueType);
                                 });
                             } else {
