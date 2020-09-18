@@ -622,10 +622,12 @@ class ApiResourceDefaultController extends ApiResourceController{
         if ($user) {
             $isAdmin = in_array('admin', $user->getRoleNames()->toArray());
             if ($this->repository->getRelationship('user') == 'BelongsTo') {
-                if(isset($model) && isset($model->user_id) && !isset($fields['user_id'])) {
-                    $fields['user_id'] = $model->user_id;
+                if(isset($model))  {
+                    if(isset($fields['user_id']) && !$isAdmin) {
+                        $fields['user_id'] = $model->user_id;
+                    }
                 }
-                if (!isset($fields['user_id']) || !$isAdmin || ($isAdmin && isset($fields['user_id']) && $fields['user_id'] == $request->user()->id)) {
+                else if(!isset($fields['user_id']) || !$isAdmin || ($isAdmin && isset($fields['user_id']) && $fields['user_id'] == $request->user()->id)) {
                     $fields['user_id'] = $request->user()->id;
                 }
             }
