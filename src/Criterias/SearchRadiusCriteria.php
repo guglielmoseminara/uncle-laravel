@@ -22,9 +22,9 @@ class SearchRadiusCriteria implements CriteriaInterface {
     {
         if ($this->searchField) {
             $search = BaseRequestParser::parserSearchData($this->searchField);
-            $latitude = $search['latitude'];
-            $longitude = $search['longitude'];
-            if (isset($latitude) && isset($longitude)) {
+            if (isset($search['latitude']) && isset($search['longitude'])) {
+                $latitude = $search['latitude'];
+                $longitude = $search['longitude'];
                 $table = $model->getModel()->getTable();
                 $sql_distance = "(((acos(sin((" . $latitude . "*pi()/180)) * sin((`" . $table . "`.`latitude`*pi()/180))+cos((" . $latitude . "*pi()/180)) * cos((`" . $table . "`.`latitude`*pi()/180)) * cos(((" . $longitude . "-`" . $table . "`.`longitude`)*pi()/180))))*180/pi())*60*1.1515*1.609344)";
                 $model = $model->where(DB::raw($sql_distance), '<=', $this->distance);
