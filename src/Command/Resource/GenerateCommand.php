@@ -11,7 +11,7 @@ class GenerateCommand extends BaseResourceCommand
      *
      * @var string
      */
-    protected $signature = 'resource:generate {resource} {--in=} ';
+    protected $signature = 'uncle:resource:generate {resource} {--in=} ';
 
     /**
      * The console command description.

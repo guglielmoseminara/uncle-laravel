@@ -11,7 +11,7 @@ class MorphManyRelationCommand extends BaseRelationCommand
      *
      * @var string
      */
-    protected $signature = 'relation:MorphMany {resourceParent} {modelParent} {resourceMorph} {modelMorph} {morphKey}';
+    protected $signature = 'uncle:relation:MorphMany {resourceParent} {modelParent} {resourceMorph} {modelMorph} {morphKey}';
 
     /**
      * The console command description.

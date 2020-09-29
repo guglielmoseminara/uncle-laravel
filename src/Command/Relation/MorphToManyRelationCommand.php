@@ -12,7 +12,7 @@ class MorphToManyRelationCommand extends BaseRelationCommand
      *
      * @var string
      */
-    protected $signature = 'relation:create {parent} {relation} {child} {pivot?}';
+    protected $signature = 'uncle:relation:MorphToMany {parent} {relation} {child} {pivot?}';
 
     /**
      * The console command description.

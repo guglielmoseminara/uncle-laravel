@@ -11,7 +11,7 @@ class ManyToManyRelationCommand extends BaseRelationCommand
      *
      * @var string
      */
-    protected $signature = 'relation:ManyToMany {resourceParent} {modelParent} {resourceChild} {modelChild}';
+    protected $signature = 'uncle:relation:ManyToMany {resourceParent} {modelParent} {resourceChild} {modelChild}';
 
     /**
      * The console command description.

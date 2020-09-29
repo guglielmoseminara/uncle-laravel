@@ -11,7 +11,7 @@ class MorphOneRelationCommand extends BaseRelationCommand
      *
      * @var string
      */
-    protected $signature = 'relation:MorphOne {resourceParent} {modelParent} {resourceChild} {modelChild} {morphKey}';
+    protected $signature = 'uncle:relation:MorphOne {resourceParent} {modelParent} {resourceChild} {modelChild} {morphKey}';
 
     /**
      * The console command description.

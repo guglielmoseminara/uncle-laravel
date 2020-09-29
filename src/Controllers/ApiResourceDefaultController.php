@@ -162,7 +162,7 @@ class ApiResourceDefaultController extends ApiResourceController{
         if (!$model) {
             return $this->validNotFoundJsonResponse();
         }
-        $requestData = $this->setRequestUser($request, $request->validated());
+        $requestData = $this->setRequestUser($request, $request->validated(), $model);
 
         DB::beginTransaction();
 
@@ -220,11 +220,15 @@ class ApiResourceDefaultController extends ApiResourceController{
         }
         $fileBag = $request->files;
         $requestData = $request->validated();
+        $resource = $model->getTable();
+        if (method_exists($model, 'getUploadableResource')) {
+            $resource = $model->getUploadableResource();
+        }
         $modelId = $model->id;
         if (method_exists($model, 'getUploadableId')) {
             $modelId = $model->getUploadableId();
         }
-        $relativePath .= $model->getTable().'/'.$modelId.'/';
+        $relativePath .= $resource.'/'.$modelId.'/';
         foreach ($fileBag->all() as $paramName => $uploadedFiles) {
             $attributes = $model->getAttributes();
             if (array_key_exists($paramName, $attributes)) {
@@ -427,16 +431,15 @@ class ApiResourceDefaultController extends ApiResourceController{
     protected function updateOrCreateHasOne(array $fillable, Model $model, Relation $relation)
     {
         $id = '';
-
-        if (array_key_exists('id', $fillable)) {
-            $id = $fillable['id'];
+        $primaryKey = $relation->getModel()->getKeyName();
+        if (array_key_exists($primaryKey, $fillable)) {
+            $id = $fillable[$primaryKey];
         }
-
-        if (Arr::except($fillable, ['id'])) {
+        if (Arr::except($fillable, [$primaryKey])) {
             if (property_exists($this, 'pruneHasOne') && $this->pruneHasOne !== false) {
                 $relation->update($fillable);
             }
-            return $relation->updateOrCreate(['id' => $id], $fillable);
+            return $relation->updateOrCreate([$primaryKey => $id], $fillable);
         }
 
         return null;
@@ -614,12 +617,17 @@ class ApiResourceDefaultController extends ApiResourceController{
         }
     }*/
 
-    private function setRequestUser(&$request, $fields) {
+    private function setRequestUser(&$request, $fields, $model = null) {
         $user = $request->user();
         if ($user) {
             $isAdmin = in_array('admin', $user->getRoleNames()->toArray());
             if ($this->repository->getRelationship('user') == 'BelongsTo') {
-                if (!isset($fields['user_id']) || !$isAdmin || ($isAdmin && isset($fields['user_id']) && $fields['user_id'] == $request->user()->id)) {
+                if(isset($model))  {
+                    if(isset($fields['user_id']) && !$isAdmin) {
+                        $fields['user_id'] = $model->user_id;
+                    }
+                }
+                else if(!isset($fields['user_id']) || !$isAdmin || ($isAdmin && isset($fields['user_id']) && $fields['user_id'] == $request->user()->id)) {
                     $fields['user_id'] = $request->user()->id;
                 }
             }

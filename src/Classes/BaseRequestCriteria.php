@@ -30,8 +30,13 @@ class BaseRequestCriteria implements CriteriaInterface
         $this->request = $request;
     }
 
-    private function buildCondition(&$query, $field, $condition, $value, $or=false) {
-        if($condition == 'date') {
+    private function buildCondition(&$query, $field, $condition, $value, $valueType = null, $or=false) {
+        if(isset($valueType)) {
+            if($valueType == 'date') {
+                $valueArr = explode('.', $value);
+            }
+        }
+        else if($condition == 'date') {
             $valueArr = explode('.', $value);
             $condition = '=';
         }
@@ -120,7 +125,14 @@ class BaseRequestCriteria implements CriteriaInterface
                         $condition = "=";
                     }
                     $value = null;
-                    $condition = trim(strtolower($condition));
+                    if(is_array($condition)){
+                        $valueType = $condition['type'];
+                        $condition = trim(strtolower($condition['condition']));
+                    }
+                    else {
+                        $valueType = null;
+                        $condition = trim(strtolower($condition));
+                    }
                     if (isset($searchData[$field])) {
                         $value = ($condition == "like" || $condition == "ilike") ? "%{$searchData[$field]}%" : $searchData[$field];
                     } else {
@@ -141,11 +153,11 @@ class BaseRequestCriteria implements CriteriaInterface
                         if (!is_null($value)) {
                             if(!is_null($relation)) {
                                 $relatedTable = $this->getRelatedTableName($parentModel, $relation, $field);
-                                $query->whereHas($relation, function($query) use($field,$condition,$value, $relatedTable) {
-                                    $this->buildCondition($query, $relatedTable.'.'.$field, $condition, $value);
+                                $query->whereHas($relation, function($query) use($field,$condition,$value, $valueType, $relatedTable) {
+                                    $this->buildCondition($query, $relatedTable.'.'.$field, $condition, $value, $valueType);
                                 });
                             } else {
-                                $this->buildCondition($query, $modelTableName.'.'.$field, $condition, $value);
+                                $this->buildCondition($query, $modelTableName.'.'.$field, $condition, $value, $valueType);
                             }
                             $isFirstField = false;
                         }
@@ -153,11 +165,11 @@ class BaseRequestCriteria implements CriteriaInterface
                         if (!is_null($value)) {
                             if(!is_null($relation)) {
                                 $relatedTable = $this->getRelatedTableName($parentModel, $relation, $field);
-                                $query->orWhereHas($relation, function($query) use($field,$condition,$value,$relatedTable) {
-                                    $this->buildCondition($query, $relatedTable.'.'.$field, $condition, $value);
+                                $query->orWhereHas($relation, function($query) use($field,$condition,$value,$valueType, $relatedTable) {
+                                    $this->buildCondition($query, $relatedTable.'.'.$field, $condition, $value, $valueType);
                                 });
                             } else {
-                                $this->buildCondition($query, $modelTableName.'.'.$field, $condition, $value, true);
+                                $this->buildCondition($query, $modelTableName.'.'.$field, $condition, $value, $valueType, true);
                             }
                         }
                     }

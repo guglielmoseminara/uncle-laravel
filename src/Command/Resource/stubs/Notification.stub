@@ -41,7 +41,7 @@ class {notificationName}Notification extends Notification implements ShouldQueue
 
         return ( new MailMessage )
             ->from(config('mail.from.address'))
-            ->subject( 'Mail Subject' )
+            ->subject( '{notificationName}' )
             ->markdown('{notificationName}Mail');
     }
 

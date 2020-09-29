@@ -12,7 +12,7 @@ class PresenterCommand extends BaseResourceCommand
      *
      * @var string
      */
-    protected $signature = 'resource:create-presenter {resource} {presenter}';
+    protected $signature = 'uncle:resource:create-presenter {resource} {presenter}';
 
     /**
      * The console command description.
