@@ -89,5 +89,16 @@ class BaseRequestParser
         return $fields;
     }
 
-    
+    public static function createSearchDataString($searchData)
+    {
+        $search = '';
+
+        if (!empty($searchData)) {
+            foreach ($searchData as $key => $value) {
+                $search .= "$key:$value;";
+            }
+        }
+
+        return $search;
+    }
 }
