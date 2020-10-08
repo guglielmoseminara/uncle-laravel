@@ -68,18 +68,19 @@ class BaseSearchAspect extends ModelSearchAspect {
                     $fieldSplit = explode('.', $attribute->getAttribute());
                     $searchTerm = mb_strtolower($searchTerm, 'UTF8');
                     if (count($fieldSplit) > 1) {
-                        $sql = "MATCH({$fieldSplit[1]}) AGAINST(?)";
+                        $sql = "";
+                        $sql = "MATCH({$fieldSplit[1]}) AGAINST(?) or LOWER({$fieldSplit[1]}) LIKE ?";
                         $attribute->isPartial()
                             ? $query->orWhereHas($fieldSplit[0], function($query) use ($sql, $searchTerm) {
-                                $query->whereRaw($sql, [$searchTerm]);
+                                $query->whereRaw($sql, [$searchTerm, "%{$searchTerm}%"]);
                             })
                             : $query->orWhereHas($fieldSplit[0], function($query) use ($sql, $searchTerm, $attribute) {
                                 $query->where($attribute->getAttribute(), $searchTerm);
                             });         
                     } else {
-                        $sql = "MATCH({$attribute->getAttribute()}) AGAINST(?)";
+                        $sql = "MATCH({$attribute->getAttribute()}) AGAINST(?) or LOWER({$attribute->getAttribute()}) LIKE ?";
                         $attribute->isPartial()
-                            ? $query->orWhereRaw($sql, [$searchTerm])
+                            ? $query->orWhereRaw($sql, [$searchTerm, "%{$searchTerm}%"])
                             : $query->orWhere($attribute->getAttribute(), $searchTerm);    
                     }
                 }
