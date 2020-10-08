@@ -7,6 +7,7 @@ use Spatie\Searchable\ModelSearchAspect;
 use Illuminate\Foundation\Auth\User;
 use Illuminate\Support\Collection;
 use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Support\Facades\DB;
 use Arr;
 use App;
 use Schema;
@@ -67,23 +68,35 @@ class BaseSearchAspect extends ModelSearchAspect {
                     $fieldSplit = explode('.', $attribute->getAttribute());
                     $searchTerm = mb_strtolower($searchTerm, 'UTF8');
                     if (count($fieldSplit) > 1) {
-                        $sql = "LOWER({$fieldSplit[1]}) LIKE ?";
+                        $sql = "MATCH({$fieldSplit[1]}) AGAINST(?)";
                         $attribute->isPartial()
                             ? $query->orWhereHas($fieldSplit[0], function($query) use ($sql, $searchTerm) {
-                                $query->whereRaw($sql, ["%{$searchTerm}%"]);
+                                $query->whereRaw($sql, [$searchTerm]);
                             })
                             : $query->orWhereHas($fieldSplit[0], function($query) use ($sql, $searchTerm, $attribute) {
                                 $query->where($attribute->getAttribute(), $searchTerm);
-                            });
+                            });         
                     } else {
-                        $sql = "LOWER({$attribute->getAttribute()}) LIKE ?";
+                        $sql = "MATCH({$attribute->getAttribute()}) AGAINST(?)";
                         $attribute->isPartial()
-                            ? $query->orWhereRaw($sql, ["%{$searchTerm}%"])
+                            ? $query->orWhereRaw($sql, [$searchTerm])
                             : $query->orWhere($attribute->getAttribute(), $searchTerm);    
                     }
                 }
             }
         });
+        foreach (Arr::wrap($attributes) as $attribute) {
+            foreach ($searchTerms as $searchTerm) {
+                $fieldSplit = explode('.', $attribute->getAttribute());
+                $searchTerm = mb_strtolower($searchTerm, 'UTF8');
+                if (count($fieldSplit) > 1) {
+                    $query->orderByRaw("MATCH({$fieldSplit[1]}) AGAINST('$searchTerm') desc");   
+                } 
+                else {
+                    $query->orderByRaw("MATCH({$attribute->getAttribute()}) AGAINST('$searchTerm') desc");    
+                }
+            }
+        }        
         if (count($this->conditions) > 0) {
             foreach ($this->conditions as $key => $value) {
                 $relation = null;
