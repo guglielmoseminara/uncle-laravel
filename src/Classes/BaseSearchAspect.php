@@ -69,7 +69,7 @@ class BaseSearchAspect extends ModelSearchAspect {
                     $searchTerm = mb_strtolower($searchTerm, 'UTF8');
                     if (count($fieldSplit) > 1) {
                         $sql = "";
-                        $sql = "MATCH({$fieldSplit[1]}) AGAINST(?) or LOWER({$fieldSplit[1]}) LIKE ?";
+                        $sql = "(MATCH({$fieldSplit[1]}) AGAINST(?) or LOWER({$fieldSplit[1]}) LIKE ?)";
                         $attribute->isPartial()
                             ? $query->orWhereHas($fieldSplit[0], function($query) use ($sql, $searchTerm) {
                                 $query->whereRaw($sql, [$searchTerm, "%{$searchTerm}%"]);
@@ -78,7 +78,7 @@ class BaseSearchAspect extends ModelSearchAspect {
                                 $query->where($attribute->getAttribute(), $searchTerm);
                             });         
                     } else {
-                        $sql = "MATCH({$attribute->getAttribute()}) AGAINST(?) or LOWER({$attribute->getAttribute()}) LIKE ?";
+                        $sql = "(MATCH({$attribute->getAttribute()}) AGAINST(?) or LOWER({$attribute->getAttribute()}) LIKE ?)";
                         $attribute->isPartial()
                             ? $query->orWhereRaw($sql, [$searchTerm, "%{$searchTerm}%"])
                             : $query->orWhere($attribute->getAttribute(), $searchTerm);    
@@ -90,12 +90,9 @@ class BaseSearchAspect extends ModelSearchAspect {
             foreach ($searchTerms as $searchTerm) {
                 $fieldSplit = explode('.', $attribute->getAttribute());
                 $searchTerm = mb_strtolower($searchTerm, 'UTF8');
-                if (count($fieldSplit) > 1) {
-                    $query->orderByRaw("MATCH({$fieldSplit[1]}) AGAINST('$searchTerm') desc");   
-                } 
-                else {
+                if (count($fieldSplit) == 0) {
                     $query->orderByRaw("MATCH({$attribute->getAttribute()}) AGAINST('$searchTerm') desc");    
-                }
+                } 
             }
         }        
         if (count($this->conditions) > 0) {
