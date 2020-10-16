@@ -1,7 +1,7 @@
 {
     "name": "uncleproject/uncle-laravel",
     "description": "An uncle implementation for laravel",
-    "version":"1.0.3",
+    "version":"1.0.4",
     "type": "library",
     "authors": [
         {

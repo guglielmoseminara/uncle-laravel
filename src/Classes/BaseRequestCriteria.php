@@ -30,6 +30,22 @@ class BaseRequestCriteria implements CriteriaInterface
         $this->request = $request;
     }
 
+    private function applyCondition($query, $field, $condition, $value, $or) {
+        if ($or) {
+            if ($condition == 'match') {
+                $query->orWhereRaw("MATCH({$field}) AGAINST (?) or LOWER({$field}) LIKE ?", [$value, "%$value%"]);
+            } else {
+                $query->orWhere($field,$condition,$value);
+            }
+        } else {
+            if ($condition == 'match') {
+                $query->orWhereRaw("MATCH({$field}) AGAINST (?) or LOWER({$field}) LIKE ?", [$value, "%$value%"]);
+            } else {
+                $query->where($field,$condition,$value);
+            }
+        }
+    }
+
     private function buildCondition(&$query, $field, $condition, $value, $valueType = null, $or=false) {
         if(isset($valueType)) {
             if($valueType == 'date') {
@@ -56,30 +72,18 @@ class BaseRequestCriteria implements CriteriaInterface
                 if ($or) {
                     $query->orWhere(function ($query) use ($field, $condition, $valueOrArr) {
                         foreach($valueOrArr as $index => $valueOr) {
-                            if ($index == 0) {
-                                $query->where($field, $condition, $valueOr);
-                            } else {
-                                $query->orWhere($field, $condition, $valueOr);
-                            }
+                            $this->applyCondition($query, $field, $condition, $valueOr, $index > 0);
                         }
                     });
                 } else {
                     $query->where(function ($query) use ($field, $condition, $valueOrArr) {
                         foreach($valueOrArr as $index => $valueOr) {
-                            if ($index == 0) {
-                                $query->where($field, $condition, $valueOr);
-                            } else {
-                                $query->orWhere($field, $condition, $valueOr);
-                            }
+                            $this->applyCondition($query, $field, $condition, $valueOr, $index > 0);
                         }
                     });
                 }
             } else {
-                if ($or) {
-                    $query->orWhere($field,$condition,$value);
-                } else {
-                    $query->where($field,$condition,$value);
-                }
+                $this->applyCondition($query, $field, $condition, $value, $or);
             }
         }
 
@@ -134,13 +138,16 @@ class BaseRequestCriteria implements CriteriaInterface
                         $condition = trim(strtolower($condition));
                     }
                     if (isset($searchData[$field])) {
-                        $value = ($condition == "like" || $condition == "ilike") ? "%{$searchData[$field]}%" : $searchData[$field];
+                        if ($condition == "like" || $condition == "ilike") {
+                            $value = "%{$searchData[$field]}%";    
+                        }  else {
+                            $value = $searchData[$field];
+                        }
                     } else {
                         if (!empty($search)) {
                             $value = ($condition == "like" || $condition == "ilike") ? "%{$search}%" : $search;
                         }
                     }
-
                     $relation = null;
                     if(stripos($field, '.')) {
                         $explode = explode('.', $field);
