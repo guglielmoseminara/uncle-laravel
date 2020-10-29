@@ -139,6 +139,7 @@ class BaseRequestCriteria implements CriteriaInterface
                     }
                     if (isset($searchData[$field])) {
                         if ($condition == "like" || $condition == "ilike") {
+                            $searchData[$field] = str_replace(' ', '%', $searchData[$field]);
                             $value = "%{$searchData[$field]}%";    
                         }  else {
                             $value = $searchData[$field];

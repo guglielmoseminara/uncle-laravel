@@ -17,6 +17,7 @@ class BaseSearchAspect extends ModelSearchAspect {
     protected $conditions = [];
     protected $groupby = [];
     protected $scopes = [];
+    protected $filter_text = null;
 
     public function __construct($model, $attributes) {
         $newAttributes = [];
@@ -26,17 +27,20 @@ class BaseSearchAspect extends ModelSearchAspect {
                 $newAttributes[] = $attribute;
             } else {
                 if (count($attribute) > 0) {
-                    if (array_values($attribute)[0] == 'group_by') {
-                        $this->groupby = array_values($attribute)[1];
+                    if (isset($attribute['group_by'])) {
+                        $this->groupby = $attribute['group_by'];
                     } 
-                    else if (array_values($attribute)[0] == 'scopes') {
-                        $this->scopes = array_values($attribute)[1];
+                    if (isset($attribute['scopes'])) {
+                        $this->scopes = $attribute['scopes'];
                     }
-                    else {
-                        foreach ($attribute as $k => $value) {
+                    if (isset($attribute['filter_text'])) {
+                        $this->filter_text = $attribute['filter_text'];
+                    }
+                    foreach ($attribute as $k => $value) {
+                        if (!in_array($k, ['group_by', 'scopes', 'filter_text'])) {
                             $conditions[$k] = $value;
-                        }    
-                    }    
+                        }
+                    }
                 }
             }
         }
@@ -46,15 +50,11 @@ class BaseSearchAspect extends ModelSearchAspect {
 
     public function getResults(string $term, User $user = null): Collection
     {
-        if (empty($this->attributes)) {
-            throw InvalidModelSearchAspect::noSearchableAttributes($this->model);
-        }
-
         $query = ($this->model)::query();
 
-        $this->addSearchConditions($query, $term);
-        $this->addSearchScopes($query);
-
+        $filteredTerm = $this->filterText($term);
+        $this->addSearchConditions($query, $filteredTerm);
+        $this->addSearchScopes($query, $filteredTerm, $term);
         return $query->take(10)->get();
     }
 
@@ -69,32 +69,19 @@ class BaseSearchAspect extends ModelSearchAspect {
                     $searchTerm = mb_strtolower($searchTerm, 'UTF8');
                     if (count($fieldSplit) > 1) {
                         $sql = "";
-                        $sql = "(MATCH({$fieldSplit[1]}) AGAINST(?) or LOWER({$fieldSplit[1]}) LIKE ?)";
-                        $attribute->isPartial()
-                            ? $query->orWhereHas($fieldSplit[0], function($query) use ($sql, $searchTerm) {
-                                $query->whereRaw($sql, [$searchTerm, "%{$searchTerm}%"]);
-                            })
-                            : $query->orWhereHas($fieldSplit[0], function($query) use ($sql, $searchTerm, $attribute) {
-                                $query->where($attribute->getAttribute(), $searchTerm);
-                            });         
+                        $searchTerm = str_replace(' ', '%', $searchTerm);
+                        $sql = "(LOWER({$fieldSplit[1]}) LIKE ?)";
+                        $query->orWhereHas($fieldSplit[0], function($query) use ($sql, $searchTerm) {
+                            $query->whereRaw($sql, ["%{$searchTerm}%"]);
+                        });
                     } else {
-                        $sql = "(MATCH({$attribute->getAttribute()}) AGAINST(?) or LOWER({$attribute->getAttribute()}) LIKE ?)";
-                        $attribute->isPartial()
-                            ? $query->orWhereRaw($sql, [$searchTerm, "%{$searchTerm}%"])
-                            : $query->orWhere($attribute->getAttribute(), $searchTerm);    
+                        $searchTerm = str_replace(' ', '%', $searchTerm);
+                        $sql = "(LOWER({$attribute->getAttribute()}) LIKE ?)";
+                        $query->orWhereRaw($sql, ["%{$searchTerm}%"]);
                     }
                 }
             }
         });
-        foreach (Arr::wrap($attributes) as $attribute) {
-            foreach ($searchTerms as $searchTerm) {
-                $fieldSplit = explode('.', $attribute->getAttribute());
-                $searchTerm = mb_strtolower($searchTerm, 'UTF8');
-                if (count($fieldSplit) == 0) {
-                    $query->orderByRaw("MATCH({$attribute->getAttribute()}) AGAINST('$searchTerm') desc");    
-                } 
-            }
-        }        
         if (count($this->conditions) > 0) {
             foreach ($this->conditions as $key => $value) {
                 $relation = null;
@@ -121,16 +108,25 @@ class BaseSearchAspect extends ModelSearchAspect {
             }
         }
         if (count($this->groupby) > 0) {
-            $query->groupby($this->groupby);
+            $query->groupby($this->groupby[1]);
         }
     }
 
-    public function addSearchScopes(Builder $query) {
+    public function addSearchScopes(Builder $query, $filteredTerm, $term) {
         if (count($this->scopes) > 0) {
-            foreach($this->scopes as $kscope => $vscope) {
-                $query->$vscope();
+            foreach($this->scopes[1] as $kscope => $vscope) {
+                call_user_func([$query, $vscope], $filteredTerm, $term);
             }
         }
+    }
+
+    public function filterText($term) {
+        if ($this->filter_text) {
+            foreach($this->filter_text[1] as $kfilter => $vfilter) {
+                $term = call_user_func($vfilter, $term);
+            }
+        }
+        return $term;
     }
 
 

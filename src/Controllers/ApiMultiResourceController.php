@@ -26,9 +26,9 @@ class ApiMultiResourceController {
     public function index(Request $request) {
         $this->getFormRequestInstance();
         $searchResults = (new BaseSpatieSearch());
-        $searchQuery = BaseRequestParser::parserSearchData($request->get('model'));
         $types = $request->get('type') ? explode('|', $request->get('type')) : [];
         foreach($this->resources as $km => $vm) {
+            $searchQuery = BaseRequestParser::parserSearchData($request->get('model'));
             if (count($types) == 0 || in_array(strtolower($km), $types)){
                 $resourceName = isset($vm['resource']) ? $vm['resource'] : $km;
                 $modelClass = App::make($resourceName.'Resource')->getModelClassPath($vm['model']);
@@ -40,10 +40,13 @@ class ApiMultiResourceController {
                     $searchQuery = array_merge($searchQuery, $whereQuery);
                 }
                 if (isset($vm['group_by'])) {
-                    $searchQuery = array_merge($searchQuery, ['group_by', $vm['group_by']]);
+                    $searchQuery['group_by'] = ['group_by', $vm['group_by']];
                 }
                 if (isset($vm['scopes'])) {
-                    $searchQuery = array_merge($searchQuery, ['scopes', $vm['scopes']]);
+                    $searchQuery['scopes'] = ['scopes', $vm['scopes']];
+                }
+                if (isset($vm['filter_text'])) {
+                    $searchQuery['filter_text'] = ['filter_text', $vm['filter_text']];
                 }
                 $vm['fields'][] = $searchQuery;
                 $searchResults = $searchResults->registerModel($modelClass, $vm['fields']);    
