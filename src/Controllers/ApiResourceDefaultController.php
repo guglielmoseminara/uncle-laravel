@@ -559,12 +559,18 @@ class ApiResourceDefaultController extends ApiResourceController{
                 $id = '';
             }
             if (Arr::except($fields, ['id'])) {
+                $pivot = null;
+                if(isset($fields['pivot'])) {
+                    $pivot = $fields['pivot'];
+                    unset($fields['pivot']);
+                }
                 $record = $related->where($fields)->first();
                 if (!$record) {
                     $record = $related->updateOrCreate(['id' => $id], $fields);
                 }
                 array_push($keys, $record->id);
                 array_push($records, $record);
+                if(isset($pivot)) $keys[$record->id] = $pivot;
             }
 
             if(isset($record)) $this->updateOrCreateRelations($fields, $record);
