@@ -130,7 +130,6 @@ class ApiResourceDefaultController extends ApiResourceController{
                 $this->afterStore($store, $request);
         } catch (\Exception $e) {
             DB::rollback();
-
             $message = $this->storeFailedMessage($e->getMessage());
             throw new ResourceControllerException($message);
         }
@@ -230,8 +229,8 @@ class ApiResourceDefaultController extends ApiResourceController{
         }
         $relativePath .= $resource.'/'.$modelId.'/';
         foreach ($fileBag->all() as $paramName => $uploadedFiles) {
-            $attributes = $model->getAttributes();
-            if (array_key_exists($paramName, $attributes)) {
+            $attributes = $model->getFillable();
+            if (in_array($paramName, $attributes)) {
                 $this->handleNonMultipleFileUploads($model, $paramName, $uploadedFiles, $relativePath);
             } else {
                 $requestData = $this->handleMultipleFileUploads($request, $model, $paramName, $uploadedFiles, $relativePath);
@@ -329,7 +328,6 @@ class ApiResourceDefaultController extends ApiResourceController{
             if(!$ignoreRelations) $this->updateOrCreateRelations($requestData, $model);
         } catch (\Exception $e) {
             DB::rollback();
-
             $message = $this->storeFailedMessage($e->getMessage());
             throw new ResourceControllerException($message);
         }
@@ -559,18 +557,12 @@ class ApiResourceDefaultController extends ApiResourceController{
                 $id = '';
             }
             if (Arr::except($fields, ['id'])) {
-                $pivot = null;
-                if(isset($fields['pivot'])) {
-                    $pivot = $fields['pivot'];
-                    unset($fields['pivot']);
-                }
                 $record = $related->where($fields)->first();
                 if (!$record) {
                     $record = $related->updateOrCreate(['id' => $id], $fields);
                 }
                 array_push($keys, $record->id);
                 array_push($records, $record);
-                if(isset($pivot)) $keys[$record->id] = $pivot;
             }
 
             if(isset($record)) $this->updateOrCreateRelations($fields, $record);
@@ -587,6 +579,7 @@ class ApiResourceDefaultController extends ApiResourceController{
     }
 
     private function _checkFileRelationExists(Model $model, $relationName) {
+        var_dump($relationName);
         if ((!method_exists($model, $relationName) && !$model->{$relationName}() instanceof Relation)) {
             if (Lang::has('resource-controller.filerelationinexistent')) {
                 $message = trans('resource-controller.filerelationinexistent', ['relationName' => $relationName]);
