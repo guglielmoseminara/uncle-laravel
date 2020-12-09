@@ -51,10 +51,12 @@ class ResourcesServiceProvider extends ServiceProvider
                 }
             }
 
+            // add Notifications view
             if (\File::isDirectory($resourcesPath . $resource . $notificationsPath)) {
                 View::addLocation($resourcesPath . $resource . $notificationsViewPath);
             }
-
+            
+            // add Prints view
             if (\File::isDirectory($resourcesPath . $resource . $printsPath)) {
                 View::addLocation($resourcesPath . $resource . $printsPath);
             }
