@@ -55,12 +55,13 @@ class ResourcesServiceProvider extends ServiceProvider
             if (\File::isDirectory($resourcesPath . $resource . $notificationsPath)) {
                 View::addLocation($resourcesPath . $resource . $notificationsViewPath);
             }
-            
+
             // add Prints view
             if (\File::isDirectory($resourcesPath . $resource . $printsPath)) {
                 View::addLocation($resourcesPath . $resource . $printsPath);
             }
 
+            // load resource Routes
             if(\File::exists($resourcesPath . $resource. DIRECTORY_SEPARATOR . $resource ."Routes.php"))
                 $this->loadRoutesFrom($resourcesPath.$resource. DIRECTORY_SEPARATOR . $resource ."Routes.php");
         }
