@@ -34,6 +34,7 @@ class ResourcesServiceProvider extends ServiceProvider
         $resourcesFactoriesPath = $resourcesDatabasePath . DIRECTORY_SEPARATOR . 'factories';
         $notificationsPath = DIRECTORY_SEPARATOR . 'Notifications';
         $notificationsViewPath = $notificationsPath . DIRECTORY_SEPARATOR . 'mails';
+        $printsPath = DIRECTORY_SEPARATOR . 'Prints';
 
         foreach(config('uncle.resources') as $resource => $classPath) {
             $this->app->singleton($resource.'Resource', function ($app) use ($classPath) {
@@ -52,6 +53,10 @@ class ResourcesServiceProvider extends ServiceProvider
 
             if (\File::isDirectory($resourcesPath . $resource . $notificationsPath)) {
                 View::addLocation($resourcesPath . $resource . $notificationsViewPath);
+            }
+
+            if (\File::isDirectory($resourcesPath . $resource . $printsPath)) {
+                View::addLocation($resourcesPath . $resource . $printsPath);
             }
 
             if(\File::exists($resourcesPath . $resource. DIRECTORY_SEPARATOR . $resource ."Routes.php"))
