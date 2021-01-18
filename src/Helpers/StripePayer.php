@@ -57,23 +57,46 @@ class StripePayer {
         }
     }
 
-    public function makePaymentWithMethod($customerId, $methodId, $amount, $currency, $description)
+    public function makePaymentWithMethod($customerId, $methodId, $amount, $currency, $description, $return_url = null)
     {
         try {
 
             $pi = $this->stripe->paymentIntents()->create([
-                'customer' => $customerId,
+                'customer'       => $customerId,
                 'payment_method' => $methodId,
-                'currency' => $currency,
-                'amount' => $amount,
-                'description' => $description
+                'currency'       => $currency,
+                'amount'         => $amount,
+                'description'    => $description,
             ]);
 
             $confirm = $this->stripe->paymentIntents()->confirm($pi['id'],
-                ['payment_method' => $methodId]
+                [
+                    'payment_method' => $methodId,
+                    'return_url'     => $return_url
+                ]
             );
 
             return $confirm;
+
+        }
+        catch(CardErrorException $e) {
+            throw new HttpException(500,$e->getMessage());
+        }
+        catch(MissingParameterException $e) {
+            throw new HttpException(500,$e->getMessage());
+        }
+        catch (Exception $e) {
+            throw new HttpException(500,$e->getMessage());
+        }
+    }
+
+    public function findIntent($id)
+    {
+        try {
+
+            $intent = $this->stripe->paymentIntents()->find($id);
+
+            return $intent;
 
         }
         catch(CardErrorException $e) {
