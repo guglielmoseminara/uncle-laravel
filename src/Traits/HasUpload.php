@@ -15,13 +15,16 @@ trait HasUpload {
             $this->uploadable = [];
         }
         if (in_array($key, $this->uploadable)) {
-            $value = $this->attributes[$key];
-            if (empty($value)) {
-                $value = null;
-            }
-            else if (strstr($value, 'http://') === FALSE && strstr($value, 'https://') === FALSE) {
-                $url = config('app.url').'/'.config('uncle.uploadable.url');
-                $value = self::retrieveUrl($this, $url, $value);
+            if(empty($this->attributes)) $value = null;
+            else {
+                $value = $this->attributes[$key];
+                if (empty($value)) {
+                    $value = null;
+                }
+                else if (strstr($value, 'http://') === FALSE && strstr($value, 'https://') === FALSE) {
+                    $url = config('app.url').'/'.config('uncle.uploadable.url');
+                    $value = self::retrieveUrl($this, $url, $value);
+                }
             }
             return $value;
         }
