@@ -25,7 +25,7 @@
       "cesargb/laravel-cascade-delete": "^0.6.0",
       "guglielmoseminara/laravel-soft-cascade": "master",
       "guglielmoseminara/l5-resource-controller": "master",
-      "guglielmoseminara/l5-action-based-form-request": "2.1.0",
+      "guglielmoseminara/l5-action-based-form-request": "2.0.0",
       "guglielmoseminara/laravel-apidoc-generator": "master",
       "guglielmoseminara/translatable": "master"
     },
